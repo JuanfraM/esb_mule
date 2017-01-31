@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xmlns:spring="http://www.springframework.org/schema/beans" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+
+   <mulexml:namespace-manager includeConfigNamespaces="true">     
+     <mulexml:namespace prefix="sup" uri="http://support.cxf.module.mule.org/"/>
+     <mulexml:namespace prefix="soapenv" uri="http://schemas.xmlsoap.org/soap/envelope/"/>
+     <mulexml:namespace prefix="S" uri="http://www.w3.org/2003/05/soap-envelope"/>
+  	 <mulexml:namespace prefix="wsa" uri="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
+    </mulexml:namespace-manager>
+    
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <cxf:configuration name="CXF_Configuration" enableMuleSoapHeaders="true" initializeStaticBusInstance="true" doc:name="CXF Configuration"/>
+    <ws:consumer-config name="ConsumerSayHello" service="KarmaService" port="KarmaPort" serviceAddress="http://localhost:8080/TestingWS/Karma" wsdlLocation="http://localhost:8080/TestingWS/Karma?wsdl" doc:name="Web Service Consumer"/>
+    <ws:consumer-config name="WebServicePDP" service="EntitlementService" port="EntitlementServiceHttpsSoap11Endpoint" serviceAddress="https://localhost:9443/services/EntitlementService.EntitlementServiceHttpsSoap11Endpoint/" wsdlLocation="https://localhost:9443/services/EntitlementService?wsdl" doc:name="Web Service Consumer" connectorConfig="HTTP_Request_Configuration">
+    </ws:consumer-config>
+    <http:request-config name="HTTP_Request_Configuration" doc:name="HTTP Request Configuration" host="localhost" port="9443" protocol="HTTPS">
+        <http:basic-authentication username="admin" password="admin"/>
+        <tls:context>
+            <tls:trust-store path="/Users/juanfra/Proyecto/wso2is-5.2.0/repository/resources/security/client-truststore.jks" password="wso2carbon"/>
+            <tls:key-store path="/Users/juanfra/Proyecto/wso2is-5.2.0/repository/resources/security/wso2carbon.jks" password="wso2carbon" keyPassword="wso2carbon"/>
+        </tls:context>
+    </http:request-config>
+    
+    <flow name="pichondemonoFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
+        <cxf:proxy-service configuration-ref="CXF_Configuration" payload="envelope" doc:name="CXF"/>
+        <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
+        <logger message="Original Payload is #[message.payloadAs(java.lang.String)]" level="WARN" doc:name="Payload Input"/>
+        <logger  message="#[xpath3('/sup:invoke/sup:arg0',payload, 'STRING')]"  level="INFO" doc:name="Logger Edited"/>
+        <set-variable variableName="pichonVar" value="#[xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING')]" mimeType="text/xml" doc:name="Variable"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.pichonVar == 'helloService']">
+                <logger message="YEAHH!" level="INFO" doc:name="Logger True"/>
+                <dw:transform-message metadata:id="38c83a7f-c4e8-4ab5-80c3-c8c6f8438733" doc:name="Transform Message To Hello">
+                    <dw:input-payload mimeType="application/xml"/>
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace kar http://karmapackage/
+---
+{
+	kar#sayHello: {
+		arg0: payload.Envelope.Body.invoke.arg0
+	}
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <logger message="Now new Payload is #[message.payloadAs(java.lang.String)]" level="WARN" doc:name="Payload Transformed"/>
+                <ws:consumer config-ref="ConsumerSayHello" operation="sayHello" doc:name="Web Service Say Hello"/>
+                <logger message="Andando" level="INFO" doc:name="Logger"/>
+            </when>
+            <when expression="#[flowVars.pichonVar == 'PDPService']">
+                <logger message="Flow PDP" level="INFO" doc:name="By PDP"/>
+                <dw:transform-message doc:name="Transform Message To PDP">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace xsd http://org.apache.axis2/xsd
+%namespace xsi http://www.w3.org/2001/XMLSchema-instance
+---
+{
+	xsd#getDecision: {
+		xsd#request: {
+			Request @( 
+				xsi#schemaLocation: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 http://docs.oasis-open.org/xacml/3.0/xacml-core-v3-schema-wd-17.xsd",
+				ReturnPolicyIdList: "false",
+				CombinedDecision: "false",
+				xmlns: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17",
+				xsi: "http://www.w3.org/2001/XMLSchema-instance"): {
+					Attributes @(
+						Category: "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"): {
+							Attribute @(
+								IncludeInResult: "false",
+								AttributeId: "urn:oasis:names:tc:xacml:1.0:subject:subject-id"): {
+									AttributeValue @(
+										DataType: "http://www.w3.org/2001/XMLSchema#string"): "Julius Hibbert"
+								},
+							Attribute @(
+								IncludeInResult: "false",
+								AttributeId: "urn:oasis:names:tc:xacml:2.0:conformance-test:age"): {
+									AttributeValue @(
+										DataType: "http://www.w3.org/2001/XMLSchema#integer"): 45
+								}	
+					}
+			}
+		}
+	}
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <ws:consumer config-ref="WebServicePDP" operation="getDecision" doc:name="Web Service PDP"/>
+            </when>
+            <otherwise>
+                <logger message="FAILED!" level="INFO" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+    </flow>
+</mule>
