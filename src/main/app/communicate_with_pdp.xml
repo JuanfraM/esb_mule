@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ws="http://www.mulesoft.org/schema/mule/ws"
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ws="http://www.mulesoft.org/schema/mule/ws"
 	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
 	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -10,10 +10,11 @@
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
     <sub-flow name="communicate_with_pdp_sf">
         <choice doc:name="Choice">
-            <when expression="#[flowVars.pichonVar == 'helloService']">
+            <when expression="#[flowVars.EntryParams.get(&quot;Action&quot;) == 'helloService']">
                 <logger message="Choice By Say Hello" level="INFO" doc:name="By Say Hello"/>
                 <dw:transform-message doc:name="Transform Message To Hello">
                     <dw:input-payload mimeType="application/xml"/>
@@ -30,7 +31,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
                 <logger message="Now new Payload is #[message.payloadAs(java.lang.String)]" level="WARN" doc:name="Payload Transformed"/>
                 <ws:consumer config-ref="ConsumerSayHello" operation="sayHello" doc:name="Web Service Say Hello"/>
             </when>
-            <when expression="#[flowVars.pichonVar == 'PDPService']">
+            <when expression="#[flowVars.EntryParams.get(&quot;Action&quot;) == 'PDPService']">
                 <logger message="Choice was By PDP" level="INFO" doc:name="By PDP"/>
                 <dw:transform-message doc:name="Transform Aux">
                     <dw:set-variable variableName="aux"><![CDATA[%dw 1.0
@@ -95,7 +96,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
                 <logger message="Payload after XSLT: #[message.payload]" level="INFO" doc:name="Payload after XSLT"/>
                 <ws:consumer config-ref="WebServicePDP" operation="getDecision" doc:name="Web Service PDP"/>
             </when>
-            <when expression="#[flowVars.pichonVar == 'PDPService2']">
+            <when expression="#[flowVars.EntryParams.get(&quot;Action&quot;) == 'PDPService2']">
                 <logger message="Choice was by PDP 2" level="INFO" doc:name="By PDP 2"/>
                 <dw:transform-message doc:name="Transform Message">
                     <dw:set-payload><![CDATA[%output application/xml
