@@ -4,6 +4,8 @@
 
 .DS_Store
 src/.DS_Store
+catalog/*
+src/main/app/config.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -33,7 +35,7 @@ tmp/**/*
 local.properties
 .settings/
 .loadpath
-# You may want to remove the sharp symbols here if you are using Maven 
+# You may want to remove the sharp symbols here if you are using Maven
 #.project
 #.classpath
 
