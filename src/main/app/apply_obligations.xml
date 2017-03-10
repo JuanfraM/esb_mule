@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-    <sub-flow name="apply_obligationsSub_Flow">
+    <sub-flow name="apply_obligations_sf">
         <logger level="INFO" doc:name="Logger"/>
     </sub-flow>
 </mule>
