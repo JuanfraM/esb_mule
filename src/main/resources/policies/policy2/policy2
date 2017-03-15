@@ -1,7 +1,3 @@
-
-
-
-
 <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"  PolicyId="P2Tesis" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-unless-permit" Version="1.0">
    <Target>
       <AnyOf>
@@ -70,4 +66,4 @@
          <ObligationExpression FulfillOn="Permit" ObligationId="STORE"></ObligationExpression>
       </ObligationExpressions>
    </Rule>
-</Policy>        
+</Policy>
