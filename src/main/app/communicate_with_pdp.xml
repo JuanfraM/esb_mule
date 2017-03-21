@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ws="http://www.mulesoft.org/schema/mule/ws"
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ee/ftp" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ws="http://www.mulesoft.org/schema/mule/ws"
 	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
 	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -11,133 +11,70 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/ee/ftp/current/mule-ftp-ee.xsd">
     <sub-flow name="communicate_with_pdp_sf">
-        <choice doc:name="Choice">
-            <when expression="#[flowVars.EntryParams.get(&quot;Action&quot;) == 'helloService']">
-                <logger message="Choice By Say Hello" level="INFO" doc:name="By Say Hello"/>
-                <dw:transform-message doc:name="Transform Message To Hello">
-                    <dw:input-payload mimeType="application/xml"/>
-                    <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
-%namespace kar http://karmapackage/
----
-{
-	kar#sayHello: {
-		arg0: payload.Envelope.Body.invoke.arg0
-	}
-}]]></dw:set-payload>
-                </dw:transform-message>
-                <logger message="Now new Payload is #[message.payloadAs(java.lang.String)]" level="WARN" doc:name="Payload Transformed"/>
-                <ws:consumer config-ref="ConsumerSayHello" operation="sayHello" doc:name="Web Service Say Hello"/>
-            </when>
-            <when expression="#[flowVars.EntryParams.get(&quot;Action&quot;) == 'PDPService']">
-                <logger message="Choice was By PDP" level="INFO" doc:name="By PDP"/>
                 <dw:transform-message doc:name="Transform Aux">
                     <dw:set-variable variableName="aux"><![CDATA[%dw 1.0
 %output application/xml
-%namespace xsi http://www.w3.org/2001/XMLSchema-instance
+%namespace soapenv http://schemas.xmlsoap.org/soap/envelope/
+%var action=sessionVars.action
+%var from=sessionVars.from
+%var source=payload.soapenv#Envelope.soapenv#Body.Persona.Source
+%var target=payload.soapenv#Envelope.soapenv#Body.Persona.Target
 ---
 {
     Request @(
-        xsi#schemaLocation: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 http://docs.oasis-open.org/xacml/3.0/xacml-core-v3-schema-wd-17.xsd",
-        ReturnPolicyIdList: "false",
-        CombinedDecision: "false",
         xmlns: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17",
-        xsi: "http://www.w3.org/2001/XMLSchema-instance"): {
+        ReturnPolicyIdList: "false",
+        CombinedDecision: "false"): {
+	      Attributes @(
+	            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:action"): {
+	              Attribute @(
+	                IncludeInResult: "false",
+	                AttributeId: "urn:oasis:names:tc:xacml:1.0:action:action-id"): {
+	                  AttributeValue @(
+	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.action
+	                }
+	            },
           Attributes @(
             Category: "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"): {
               Attribute @(
                 IncludeInResult: "false",
                 AttributeId: "urn:oasis:names:tc:xacml:1.0:subject:subject-id"): {
                   AttributeValue @(
-                    DataType: "http://www.w3.org/2001/XMLSchema#string"): "Julius Hibbert"
-                },
-              Attribute @(
-                IncludeInResult: "false",
-                AttributeId: "urn:oasis:names:tc:xacml:2.0:conformance-test:age"): {
-                  AttributeValue @(
-                    DataType: "http://www.w3.org/2001/XMLSchema#integer"): 45
+                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.from
                 }
             },
-              Attributes @(
-                Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"): {
-                  Attribute @(
-                    IncludeInResult: "false",
-                    AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:resource-id"): {
-                      AttributeValue @(
-                        DataType: "http://www.w3.org/2001/XMLSchema#anyURI"): "http://medico.com/record/patient/BartSimpson"
-                    }
-                },
-              Attributes @(
-                Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:action"): {
-                  Attribute @(
-                    IncludeInResult: "false",
-                    AttributeId: "urn:oasis:names:tc:xacml:1.0:action:action-id"): {
-                      AttributeValue @(
-                        DataType: "http://www.w3.org/2001/XMLSchema#string"): "read"
-                    }
-                },
-              Attributes @(
-                Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:environment"): {
-                  Attribute @(
-                    IncludeInResult: "false",
-                    AttributeId: "urn:oasis:names:tc:xacml:2.0:conformance-test:bart-simpson-age"): {
-                      AttributeValue @(
-                        DataType: "http://www.w3.org/2001/XMLSchema#integer"): 10
-                    }
-                }
+          Attributes @(
+            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"): 
+            	
+              (	source mapObject {
+			      Attribute @(
+			        IncludeInResult: "false",
+			        AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:" ++ $$):  {
+			          AttributeValue @(
+			            DataType: "http://www.w3.org/2001/XMLSchema#string"): $
+			        }
+			     }
+		      ) ++
+              (	target mapObject {
+	              Attribute @(
+	                IncludeInResult: "false",
+	                AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:Target"):  {
+	                  AttributeValue @(
+	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): $$
+	                }
+	         	 }
+              )
         }
 }]]></dw:set-variable>
                 </dw:transform-message>
+                <logger message="Payload transformed: #[flowVars.aux]" level="INFO" doc:name="Logger"/>
                 <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/temp.xsl" maxIdleTransformers="2" maxActiveTransformers="5" transformerFactoryClass="org.apache.xalan.processor.TransformerFactoryImpl" doc:name="XSLT for CDATA">
                     <mulexml:context-property key="xmlValue" value="#[flowVars.aux]"/>
                 </mulexml:xslt-transformer>
                 <logger message="Payload after XSLT: #[message.payload]" level="INFO" doc:name="Payload after XSLT"/>
                 <ws:consumer config-ref="WebServicePDP" operation="getDecision" doc:name="Web Service PDP"/>
-            </when>
-            <when expression="#[flowVars.EntryParams.get(&quot;Action&quot;) == 'PDPService2']">
-                <logger message="Choice was by PDP 2" level="INFO" doc:name="By PDP 2"/>
-                <dw:transform-message doc:name="Transform Message">
-                    <dw:set-payload><![CDATA[%output application/xml
-%namespace xsd http://org.apache.axis2/xsd
-%namespace xsi http://www.w3.org/2001/XMLSchema-instance
----
-{
-	xsd#getDecision: {
-		xsd#request: {
-			Request @(
-				xsi#schemaLocation: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 http://docs.oasis-open.org/xacml/3.0/xacml-core-v3-schema-wd-17.xsd",
-				ReturnPolicyIdList: "false",
-				CombinedDecision: "false",
-				xmlns: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17",
-				xsi: "http://www.w3.org/2001/XMLSchema-instance"): {
-					Attributes @(
-						Category: "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"): {
-							Attribute @(
-								IncludeInResult: "false",
-								AttributeId: "urn:oasis:names:tc:xacml:1.0:subject:subject-id"): {
-									AttributeValue @(
-										DataType: "http://www.w3.org/2001/XMLSchema#string"): "Julius Hibbert"
-								},
-							Attribute @(
-								IncludeInResult: "false",
-								AttributeId: "urn:oasis:names:tc:xacml:2.0:conformance-test:age"): {
-									AttributeValue @(
-										DataType: "http://www.w3.org/2001/XMLSchema#integer"): 45
-								}
-					}
-			}
-		}
-	}
-}]]></dw:set-payload>
-                </dw:transform-message>
-                <logger message="Payload after transform 2: #[message.payload]" level="INFO" doc:name="Payload transformed"/>
-                <ws:consumer config-ref="Web_Service_Consumer" operation="getDecision" doc:name="Web Service PDP 2"/>
-            </when>
-            <otherwise>
-                <logger message="FAILED!  No Choice" level="INFO" doc:name="No choice"/>
-            </otherwise>
-        </choice>
     </sub-flow>
 </mule>
