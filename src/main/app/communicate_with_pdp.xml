@@ -14,6 +14,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/ee/ftp/current/mule-ftp-ee.xsd">
     <sub-flow name="communicate_with_pdp_sf">
+        <logger message="Choice was By PDP, Action:::::&gt;  #[sessionVars.EntryParams.get(&quot;Action&quot;)]" level="INFO" doc:name="By PDP"/>
                 <dw:transform-message doc:name="Transform Aux">
                     <dw:set-variable variableName="aux"><![CDATA[%dw 1.0
 %output application/xml
@@ -47,8 +48,8 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
                 }
             },
           Attributes @(
-            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"): 
-            	
+            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"):
+
               (	source mapObject {
 			      Attribute @(
 			        IncludeInResult: "false",
