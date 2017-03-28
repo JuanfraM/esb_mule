@@ -15,11 +15,15 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 %input payload application/xml
 %output application/json
 %namespace ns http://org.apache.axis2/xsd
+%var result = payload.ns#getDecisionResponse.ns#return.Response.Result
 ---
 { "Result": 
 	{ 
-		"Decision": payload.ns#getDecisionResponse.ns#return.Response.Result.Decision, 
-		"Obligations": payload.ns#getDecisionResponse.ns#return.Response.Result.Obligations
+		"Decision": result.Decision, 
+		"Obligations": result.Obligations.*Obligation map {
+			Action: $.@ObligationId,
+			Attributes: $ pluck $
+		}
 	}
 }]]></dw:set-variable>
         </dw:transform-message>
