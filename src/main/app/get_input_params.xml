@@ -6,11 +6,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
     <sub-flow name="get_input_params_sf">
-        <set-variable variableName="EntryParams" value="#[new java.util.HashMap()]" doc:name="Create EntryParams"/>
-        <expression-component doc:name="Set params into EntryParams"><![CDATA[#[flowVars.EntryParams.put("Action", xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING') );
-flowVars.EntryParams.put("To", xpath3('/soapenv:Envelope/S:Header/wsa:To',payload, 'STRING') );
-flowVars.EntryParams.put("From", xpath3('/soapenv:Envelope/S:Header/wsa:From',payload, 'STRING') );
-flowVars.EntryParams.put("ReplyTo", xpath3('/soapenv:Envelope/S:Header/wsa:ReplyTo',payload, 'STRING') );
-flowVars.EntryParams.put("FaultTo", xpath3('/soapenv:Envelope/S:Header/wsa:FaultTo',payload, 'STRING') )]]]></expression-component>
+        <set-session-variable variableName="EntryParams" value="#[new java.util.HashMap()]" doc:name="Create EntryParams"/>
+        <expression-component doc:name="Set params into EntryParams"><![CDATA[#[sessionVars.EntryParams.put("Action", xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING') );
+sessionVars.EntryParams.put("To", xpath3('/soapenv:Envelope/S:Header/wsa:To',payload, 'STRING') );
+sessionVars.EntryParams.put("From", xpath3('/soapenv:Envelope/S:Header/wsa:From',payload, 'STRING') );
+sessionVars.EntryParams.put("ReplyTo", xpath3('/soapenv:Envelope/S:Header/wsa:ReplyTo',payload, 'STRING') );
+sessionVars.EntryParams.put("FaultTo", xpath3('/soapenv:Envelope/S:Header/wsa:FaultTo',payload, 'STRING') );
+sessionVars.from=xpath3('/soapenv:Envelope/S:Header/wsa:From',payload, 'STRING');
+sessionVars.action=xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING') ]]]></expression-component>
     </sub-flow>
 </mule>
