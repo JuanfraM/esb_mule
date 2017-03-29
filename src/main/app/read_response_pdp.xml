@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
         <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/templateXSLT.xslt" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT" mimeType="application/xml"/>
         <dw:transform-message doc:name="Transform Message">
-            <dw:set-variable variableName="theVariable"><![CDATA[%dw 1.0
+            <dw:set-variable variableName="applyObligations"><![CDATA[%dw 1.0
 %input payload application/xml
 %output application/json
 %namespace ns http://org.apache.axis2/xsd
@@ -19,14 +19,20 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 ---
 { "Result": 
 	{ 
-		"Decision": result.Decision, 
+		"Decision": result.Decision,
 		"Obligations": result.Obligations.*Obligation map {
 			Action: $.@ObligationId,
-			Attributes: $ pluck $
+			Attributes: ($ pluck $) map ((value, pos) -> value replace /\n/ with "")		
 		}
+	}
+} when result.Obligations?
+otherwise {
+	"Result": 
+	{ 
+		"Decision": result.Decision
 	}
 }]]></dw:set-variable>
         </dw:transform-message>
-        <logger message="The Variable is #[flowVars.theVariable]" level="INFO" doc:name="Logger"/>
+        <logger message="This variable is going to be the entry of the Apply Obligations module #[flowVars.applyObligations]" level="INFO" doc:name="Logger"/>
     </sub-flow>
 </mule>
