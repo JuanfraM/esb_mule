@@ -6,6 +6,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
     <sub-flow name="apply_obligations_sf">
-        <logger level="INFO" doc:name="Logger"/>
+        <logger level="INFO" doc:name="Logger" message="This is the applyObligations hash #[flowVars.applyObligations.Result]"/>
+        <foreach collection="#[flowVars.sourceTarget.Target]" doc:name="For Each">
+            <logger message="Values: #[payload]" level="INFO" doc:name="Logger"/>
+        </foreach>
     </sub-flow>
 </mule>

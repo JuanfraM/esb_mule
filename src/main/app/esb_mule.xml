@@ -50,6 +50,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
         <flow-ref name="get_input_params_sf" doc:name="get_input_params_sf"/>
         <flow-ref name="communicate_with_pdp_sf" doc:name="communicate_with_pdp_sf"/>
         <flow-ref name="read_response_pdp_sf" doc:name="read_response_pdp_sf"/>
+        <flow-ref name="apply_obligations_sf" doc:name="apply_obligations_sf"/>
         <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
     </flow>
 </mule>

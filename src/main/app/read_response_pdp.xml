@@ -33,6 +33,5 @@ otherwise {
 	}
 }]]></dw:set-variable>
         </dw:transform-message>
-        <logger message="This variable is going to be the entry of the Apply Obligations module #[flowVars.applyObligations]" level="INFO" doc:name="Logger"/>
     </sub-flow>
 </mule>

@@ -71,6 +71,20 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
 }]]></dw:set-variable>
                 </dw:transform-message>
                 <logger message="Payload transformed: #[flowVars.aux]" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Get Source and Target">
+            <dw:set-variable variableName="sourceTarget"><![CDATA[%dw 1.0
+%input payload application/xml
+%output application/json
+%namespace soapenv http://schemas.xmlsoap.org/soap/envelope/
+%var source=payload.soapenv#Envelope.soapenv#Body.Persona.Source
+%var target=payload.soapenv#Envelope.soapenv#Body.Persona.Target
+---
+{ 
+	Source: { (source.TipoDocumento): source.NumeroDocumento },
+	Target: target pluck $$
+}]]></dw:set-variable>
+        </dw:transform-message>
+        <logger message="This is the Source Target #[flowVars.sourceTarget]" level="INFO" doc:name="Logger"/>
                 <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/temp.xsl" maxIdleTransformers="2" maxActiveTransformers="5" transformerFactoryClass="org.apache.xalan.processor.TransformerFactoryImpl" doc:name="XSLT for CDATA">
                     <mulexml:context-property key="xmlValue" value="#[flowVars.aux]"/>
                 </mulexml:xslt-transformer>
