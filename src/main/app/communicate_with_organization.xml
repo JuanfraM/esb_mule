@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+
+	<http:request-config name="request_to_service" host="#[flowVars.destinationService.host]" port="#[flowVars.destinationService.port]" basePath="#[flowVars.destinationService.base]" doc:name="HTTP Request Configuration"/>
+
+	<flow name="communicate_with_organization_sf">
+		<dw:transform-message doc:name="Resolve Service">
+			<dw:set-variable variableName="destinationService">
+				<![CDATA[%dw 1.0
+%output application/java
+%var service = sessionVars.destination
+---
+{
+	host: p((lower service) ++ "_host"),
+	port: p((lower service) ++ "_port"),
+	base: p((lower service) ++ "_base_path"),
+	action: sessionVars.action
+}
+]]>
+			</dw:set-variable>
+		</dw:transform-message>
+		<dw:transform-message doc:name="Generate Request">
+			<dw:set-variable variableName="request">
+				<![CDATA[%dw 1.0
+			%output application/java
+			---
+			{
+				ci: flowVars.sourceTarget.Source.CI,
+				user: convertToString(flowVars.sourceTarget.Target)
+			}
+		]]>
+			</dw:set-variable>
+		</dw:transform-message>
+		<http:request config-ref="request_to_service" path="#[flowVars.destinationService.action]" method="GET" doc:name="Communicate with Service" parseResponse="false">
+			<http:request-builder>
+				<http:query-params expression="#[flowVars.request]"/>
+			</http:request-builder>
+		</http:request>
+		<json:json-to-xml-transformer doc:name="JSON to XML"/>
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<logger message="Wrong Service!" level="WARN" doc:name="Wrong Service"/>
+			<dw:transform-message doc:name="Response Wrong Service">
+				<dw:set-payload>
+					<![CDATA[%dw 1.0
+%output application/xml
+---
+{
+	response: {
+		info: "Wrong Service"
+	}
+}]]>
+				</dw:set-payload>
+			</dw:transform-message>
+		</catch-exception-strategy>
+	</flow>
+</mule>

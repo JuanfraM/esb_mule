@@ -13,6 +13,7 @@ sessionVars.EntryParams.put("From", xpath3('/soapenv:Envelope/S:Header/wsa:From'
 sessionVars.EntryParams.put("ReplyTo", xpath3('/soapenv:Envelope/S:Header/wsa:ReplyTo',payload, 'STRING') );
 sessionVars.EntryParams.put("FaultTo", xpath3('/soapenv:Envelope/S:Header/wsa:FaultTo',payload, 'STRING') );
 sessionVars.from=xpath3('/soapenv:Envelope/S:Header/wsa:From',payload, 'STRING');
-sessionVars.action=xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING') ]]]></expression-component>
+sessionVars.action=xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING');
+sessionVars.destination=xpath3('/soapenv:Envelope/S:Header/wsa:To',payload, 'STRING') ]]]></expression-component>
     </sub-flow>
 </mule>
