@@ -1,11 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
     <sub-flow name="apply_obligations_sf">
-        <logger level="INFO" doc:name="Logger"/>
+        <foreach collection="#[flowVars.applyObligations.Result.Obligations]" doc:name="For Each">
+            <choice doc:name="Choice">
+                <when expression="">
+                    <flow-ref name="apply_filter" doc:name="apply_filter"/>
+                </when>
+                <when expression="">
+                    <flow-ref name="apply_enrich" doc:name="apply_enrich"/>
+                </when>
+                <otherwise>
+                    <logger message="GIL" level="INFO" doc:name="Logger"/>
+                </otherwise>
+            </choice>
+        </foreach>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-variable variableName="resultArray"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	source: flowVars.sourceTarget.Source
+}]]></dw:set-variable>
+        </dw:transform-message>
+        <logger message="This is the Result Array #[flowVars.resultArray]" level="INFO" doc:name="Logger"/>
+    </sub-flow>
+    <sub-flow name="apply_enrich">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-variable variableName="enrichArray"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	enrich: flowVars.sourceTarget.Target ++ payload.Attributes
+}]]></dw:set-variable>
+        </dw:transform-message>
+    </sub-flow>
+    <sub-flow name="apply_filter">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-variable variableName="filterArray"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	filter: flowVars.sourceTarget.Target -- payload.Attributes
+}]]></dw:set-variable>
+            <dw:set-session-variable variableName="filterArray"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	filter: flowVars.sourceTarget.Target -- payload.Attributes
+}]]></dw:set-session-variable>
+        </dw:transform-message>
     </sub-flow>
 </mule>
