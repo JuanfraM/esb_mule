@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
         <dw:transform-message doc:name="Transform Message">
             <dw:set-variable variableName="applyObligations"><![CDATA[%dw 1.0
 %input payload application/xml
-%output application/json
+%output application/java
 %namespace ns http://org.apache.axis2/xsd
 %var result = payload.ns#getDecisionResponse.ns#return.Response.Result
 ---
