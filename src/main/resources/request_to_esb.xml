@@ -7,8 +7,8 @@
     <soapenv:Body>
         <Persona>
             <Source>
-                <TipoDocumento>CI</TipoDocumento>
-                <NumeroDocumento>12345678</NumeroDocumento>
+                <TipoDocumento>ci</TipoDocumento>
+                <NumeroDocumento>42576388</NumeroDocumento>
             </Source>
             <Target>
                 <nombre></nombre>
