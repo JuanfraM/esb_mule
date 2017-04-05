@@ -3,7 +3,7 @@
 <mule xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
 	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-xmlns:spring="http://www.springframework.org/schema/beans" 
+xmlns:spring="http://www.springframework.org/schema/beans"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
@@ -16,19 +16,29 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
 
-   <mulexml:namespace-manager includeConfigNamespaces="true">     
+   	<mulexml:namespace-manager includeConfigNamespaces="true">
      <mulexml:namespace prefix="sup" uri="http://support.cxf.module.mule.org/"/>
      <mulexml:namespace prefix="soapenv" uri="http://schemas.xmlsoap.org/soap/envelope/"/>
      <mulexml:namespace prefix="S" uri="http://www.w3.org/2003/05/soap-envelope"/>
   	 <mulexml:namespace prefix="wsa" uri="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
-    </mulexml:namespace-manager>
-    
+   	</mulexml:namespace-manager>
+   
+   	<configuration doc:name="Configuration">
+    	<expression-language autoResolveVariables="true">
+     		<global-functions>
+             	def convertToString(data){
+                	return data.toString();
+             	}
+        	 </global-functions>
+     	</expression-language>
+ 	</configuration>
+
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
     <cxf:configuration name="CXF_Configuration" enableMuleSoapHeaders="true" initializeStaticBusInstance="true" doc:name="CXF Configuration"/>
     <ws:consumer-config name="ConsumerSayHello" service="KarmaService" port="KarmaPort" serviceAddress="http://localhost:8080/TestingWS/Karma" wsdlLocation="http://localhost:8080/TestingWS/Karma?wsdl" doc:name="Web Service Consumer"/>
-    <ws:consumer-config name="WebServicePDP" service="EntitlementService" port="EntitlementServiceHttpsSoap12Endpoint" 
-    					serviceAddress="https://localhost:9443/services/EntitlementService.EntitlementServiceHttpsSoap12Endpoint/" 
-    					wsdlLocation="https://localhost:9443/services/EntitlementService?wsdl" doc:name="Web Service Consumer" 
+    <ws:consumer-config name="WebServicePDP" service="EntitlementService" port="EntitlementServiceHttpsSoap12Endpoint"
+    					serviceAddress="https://localhost:9443/services/EntitlementService.EntitlementServiceHttpsSoap12Endpoint/"
+    					wsdlLocation="https://localhost:9443/services/EntitlementService?wsdl" doc:name="Web Service Consumer"
     					connectorConfig="HTTP_Request_Configuration">
     </ws:consumer-config>
     <http:request-config name="HTTP_Request_Configuration" doc:name="HTTP Request Configuration" host="localhost" port="9443" protocol="HTTPS">
@@ -39,9 +49,10 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
         </tls:context>
     </http:request-config>
     <ws:consumer-config name="Web_Service_Consumer" service="EntitlementService" port="EntitlementServiceHttpsSoap11Endpoint" serviceAddress="https://localhost:9443/services/EntitlementService.EntitlementServiceHttpsSoap11Endpoint/" wsdlLocation="https://localhost:9443/services/EntitlementService?wsdl" doc:name="Web Service Consumer" connectorConfig="HTTP_Request_Configuration"/>
-    
-    <context:property-placeholder location="config.properties"/>
-    
+
+    <context:property-placeholder location="config.properties" order="1" ignore-unresolvable="true" />
+    <context:property-placeholder location="other.properties" order="2" ignore-unresolvable="true" />
+
     <flow name="main_f" >
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
         <cxf:proxy-service configuration-ref="CXF_Configuration" payload="envelope" doc:name="CXF"/>
@@ -51,6 +62,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
         <flow-ref name="communicate_with_pdp_sf" doc:name="communicate_with_pdp_sf"/>
         <flow-ref name="read_response_pdp_sf" doc:name="read_response_pdp_sf"/>
         <flow-ref name="apply_obligations_sf" doc:name="apply_obligations_sf"/>
+        <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
         <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
     </flow>
 </mule>
