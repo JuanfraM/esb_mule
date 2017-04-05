@@ -39,15 +39,17 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 		<dw:transform-message doc:name="Generate Request">
 			<dw:set-variable variableName="request">
 				<![CDATA[%dw 1.0
-			%output application/java
-			---
-			{
-				ci: flowVars.sourceTarget.Source.CI,
-				user: convertToString(flowVars.sourceTarget.Target)
-			}
-		]]>
+%output application/java
+---
+{	
+	(flowVars.sourceTarget.Source mapObject (
+		'$$': $
+	)),
+	user: convertToString(flowVars.sourceTarget.Target)
+}]]>
 			</dw:set-variable>
 		</dw:transform-message>
+        <logger message="Request to Service #[flowVars.request]" level="INFO" doc:name="Logger"/>
 		<http:request config-ref="request_to_service" path="#[flowVars.destinationService.action]" method="GET" doc:name="Communicate with Service" parseResponse="false">
 			<http:request-builder>
 				<http:query-params expression="#[flowVars.request]"/>
