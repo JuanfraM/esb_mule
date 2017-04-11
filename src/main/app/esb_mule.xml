@@ -57,12 +57,15 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
         <cxf:proxy-service configuration-ref="CXF_Configuration" payload="envelope" doc:name="CXF"/>
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
-        <logger message="Original Payload is #[message.payload]" level="WARN" doc:name="Payload Input"/>
         <flow-ref name="get_input_params_sf" doc:name="get_input_params_sf"/>
-        <flow-ref name="communicate_with_pdp_sf" doc:name="communicate_with_pdp_sf"/>
-        <flow-ref name="read_response_pdp_sf" doc:name="read_response_pdp_sf"/>
-        <flow-ref name="apply_obligations_sf" doc:name="apply_obligations_sf"/>
+        <flow-ref name="prepare_to_rfa_sf" doc:name="prepare_to_rfa_sf"/>
+        <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
         <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
+        <response>
+            <logger level="INFO" doc:name="Prepare output to initial endpoint"/>
+            <logger level="INFO" doc:name="Call fetch_read_apply_sf"/>
+            <flow-ref name="prepare_to_rfa_sf" doc:name="prepare_to_rfa_sf"/>
+        </response>
         <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
     </flow>
 </mule>
