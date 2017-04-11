@@ -28,9 +28,9 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 %var service = sessionVars.destination
 ---
 {
-	host: p((lower service) ++ "_host"),
-	port: p((lower service) ++ "_port"),
-	base: p((lower service) ++ "_base_path"),
+	host: p("service_host"),
+	port: p("service_port"),
+	base: p("service_base_path") ++ (lower service) ++ "/",
 	action: sessionVars.action
 }
 ]]>
@@ -52,7 +52,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <logger message="Request to Service #[flowVars.request]" level="INFO" doc:name="Logger"/>
 		<http:request config-ref="request_to_service" path="#[flowVars.destinationService.action]" method="GET" doc:name="Communicate with Service" parseResponse="false">
 			<http:request-builder>
-				<http:query-params expression="#[flowVars.request]"/>
+                <http:query-params expression="#[flowVars.request]"/>
 			</http:request-builder>
 		</http:request>
 		<json:json-to-xml-transformer doc:name="JSON to XML"/>
