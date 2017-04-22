@@ -20,23 +20,22 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
 %namespace soapenv http://schemas.xmlsoap.org/soap/envelope/
 %var action=sessionVars.action
 %var from=sessionVars.from
-%var source=payload.soapenv#Envelope.soapenv#Body.Persona.Source
-%var target=payload.soapenv#Envelope.soapenv#Body.Persona.Target
+%var source=payload.soapenv#Envelope.soapenv#Body.Persona
 ---
 {
     Request @(
         xmlns: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17",
         ReturnPolicyIdList: "false",
         CombinedDecision: "false"): {
-	      Attributes @(
-	            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:action"): {
-	              Attribute @(
-	                IncludeInResult: "false",
-	                AttributeId: "urn:oasis:names:tc:xacml:1.0:action:action-id"): {
-	                  AttributeValue @(
-	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.action
-	                }
-	            },
+  	      Attributes @(
+	        Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:action"): {
+	          Attribute @(
+	            IncludeInResult: "false",
+	            AttributeId: "urn:oasis:names:tc:xacml:1.0:action:action-id"): {
+	              AttributeValue @(
+	                DataType: "http://www.w3.org/2001/XMLSchema#string"): "read"
+	            }
+	         },
           Attributes @(
             Category: "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"): {
               Attribute @(
@@ -58,30 +57,28 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
 			        }
 			     }
 		      ) ++
-              (	target mapObject {
-	              Attribute @(
+              (	Attribute @(
 	                IncludeInResult: "false",
-	                AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:Target"):  {
+	                AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:resource-id"): {
 	                  AttributeValue @(
-	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): $$
+	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.action
 	                }
-	         	 }
               )
         }
 }]]></dw:set-variable>
                 </dw:transform-message>
                 <logger message="Payload transformed: #[flowVars.aux]" level="INFO" doc:name="Logger"/>
-        <dw:transform-message doc:name="Get Source and Target">
+        <dw:transform-message doc:name="Get Source">
             <dw:set-variable variableName="sourceTarget"><![CDATA[%dw 1.0
 %input payload application/xml
 %output application/java
 %namespace soapenv http://schemas.xmlsoap.org/soap/envelope/
-%var source=payload.soapenv#Envelope.soapenv#Body.Persona.Source
-%var target=payload.soapenv#Envelope.soapenv#Body.Persona.Target
+%var source=payload.soapenv#Envelope.soapenv#Body.Persona
 ---
 { 
-	Source: { (source.TipoDocumento): source.NumeroDocumento },
-	Target: target pluck $$ as :string
+	Source: (source mapObject {
+		"$$": $ as :string
+	})			     
 }]]></dw:set-variable>
         </dw:transform-message>
         <logger message="This is the Source Target #[flowVars.sourceTarget]" level="INFO" doc:name="Logger"/>
