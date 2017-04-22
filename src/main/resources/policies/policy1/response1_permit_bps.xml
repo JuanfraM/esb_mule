@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <ns:getDecisionResponse xmlns:ns="http://org.apache.axis2/xsd">
+      <ns:return>
+        <Response xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17">
+          <Result>
+            <Decision>Permit</Decision>
+            <Status>
+              <StatusCode Value="urn:oasis:names:tc:xacml:1.0:status:ok"/>
+            </Status>
+            <Obligations>
+              <Obligation ObligationId="filter">
+                <AttributeAssignment  AttributeId="sexo" DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeAssignment>
+              </Obligation>
+              <Obligation ObligationId="log">
+              </Obligation>
+            </Obligations>
+          </Result>
+        </Response>
+      </ns:return>
+    </ns:getDecisionResponse>
+  </soapenv:Body>
+</soapenv:Envelope>
