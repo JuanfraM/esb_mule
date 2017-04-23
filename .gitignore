@@ -6,6 +6,7 @@
 src/.DS_Store
 catalog/*
 src/main/app/config.properties
+src/main/app/mule-deploy.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

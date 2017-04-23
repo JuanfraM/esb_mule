@@ -60,12 +60,27 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
         <flow-ref name="get_input_params_sf" doc:name="get_input_params_sf"/>
         <flow-ref name="prepare_to_rfa_sf" doc:name="prepare_to_rfa_sf"/>
         <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
-        <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
-        <response>
-            <logger level="INFO" doc:name="Prepare output to initial endpoint"/>
-            <logger level="INFO" doc:name="Call fetch_read_apply_sf"/>
-            <flow-ref name="prepare_to_rfa_sf" doc:name="prepare_to_rfa_sf"/>
-        </response>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
+                <logger message="DENY result" level="INFO" doc:name="Logger"/>
+            </when>
+            <otherwise>
+                <flow-ref name="not_deny_flow" doc:name="not_deny_flow"/>
+            </otherwise>
+        </choice>
         <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
     </flow>
+    <sub-flow name="not_deny_flow">
+        <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
+        <flow-ref name="prepare_to_rfa_sf" doc:name="prepare_to_rfa_sf"/>
+        <logger level="INFO" doc:name="Call fetch_read_apply_sf"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
+                <logger message="DENY second result" level="INFO" doc:name="Logger"/>
+            </when>
+            <otherwise>
+                <logger level="INFO" doc:name="Prepare output to initial endpoint"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
 </mule>
