@@ -44,8 +44,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 {	
 	(flowVars.sourceTarget.Source mapObject (
 		'$$': $
-	)),
-	user: convertToString(flowVars.sourceTarget.Target)
+	))
 }]]>
 			</dw:set-variable>
 		</dw:transform-message>
