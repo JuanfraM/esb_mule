@@ -10,16 +10,17 @@
               <StatusCode Value="urn:oasis:names:tc:xacml:1.0:status:ok"/>
             </Status>
             <Obligations>
-              <Obligation ObligationId="FILTER">
-                <AttributeAssignment  AttributeId="TEL" DataType="http://www.w3.org/2001/XMLSchema#string">TEL</AttributeAssignment>
+              <Obligation ObligationId="filter">
+                <AttributeAssignment  AttributeId="sexo" DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeAssignment>
+                <AttributeAssignment  AttributeId="tel" DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeAssignment>
+                <AttributeAssignment  AttributeId="nacionalidad" DataType="http://www.w3.org/2001/XMLSchema#string">nacionalidad</AttributeAssignment>
               </Obligation>
-              <Obligation ObligationId="STORE">
-              </Obligation>
-              <Obligation ObligationId="LOG">
+              <Obligation ObligationId="log">
               </Obligation>
             </Obligations>
           </Result>
         </Response>
       </ns:return>
     </ns:getDecisionResponse>
-    </soapenv:Body>undefined</soapenv:Envelope>
+  </soapenv:Body>
+</soapenv:Envelope>
