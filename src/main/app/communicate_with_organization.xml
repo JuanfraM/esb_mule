@@ -54,7 +54,6 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
                 <http:query-params expression="#[flowVars.request]"/>
 			</http:request-builder>
 		</http:request>
-		<json:json-to-xml-transformer doc:name="JSON to XML"/>
 		<catch-exception-strategy doc:name="Catch Exception Strategy">
 			<logger message="Wrong Service!" level="WARN" doc:name="Wrong Service"/>
 			<dw:transform-message doc:name="Response Wrong Service">
