@@ -46,8 +46,8 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
                 }
             },
           Attributes @(
-            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"): 
-            	
+            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"):
+
               (	source mapObject {
 			      Attribute @(
 			        IncludeInResult: "false",
@@ -75,14 +75,14 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
 %namespace soapenv http://schemas.xmlsoap.org/soap/envelope/
 %var source=payload.soapenv#Envelope.soapenv#Body.Persona
 ---
-{ 
+{
 	Source: (source mapObject {
 		"$$": $ as :string
-	})			     
+	})
 }]]></dw:set-variable>
         </dw:transform-message>
         <logger message="This is the Source Target #[flowVars.sourceTarget]" level="INFO" doc:name="Logger"/>
-                <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/temp.xsl" maxIdleTransformers="2" maxActiveTransformers="5" transformerFactoryClass="org.apache.xalan.processor.TransformerFactoryImpl" doc:name="XSLT for CDATA">
+                <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/xslt/temp.xslt" maxIdleTransformers="2" maxActiveTransformers="5" transformerFactoryClass="org.apache.xalan.processor.TransformerFactoryImpl" doc:name="XSLT for CDATA">
                     <mulexml:context-property key="xmlValue" value="#[flowVars.aux]"/>
                 </mulexml:xslt-transformer>
                 <logger message="Payload after XSLT: #[message.payload]" level="INFO" doc:name="Payload after XSLT"/>

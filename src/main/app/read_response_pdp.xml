@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
     <sub-flow name="read_response_pdp_sf">
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
-        <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/templateXSLT.xslt" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT" mimeType="application/xml"/>
+        <mulexml:xslt-transformer xsl-file="${path_project}/esb_mule/src/main/resources/xslt/remove-cdata.xslt" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT" mimeType="application/xml"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-variable variableName="applyObligations"><![CDATA[%dw 1.0
 %input payload application/xml
