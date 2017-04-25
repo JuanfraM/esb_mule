@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"  PolicyId="User-Data-DGI" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-overrides" Version="1.0">
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"  PolicyId="User-Data-DGI-1" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-permit-overrides" Version="1.0">
   <Target>
     <AnyOf>
       <AllOf>
@@ -16,6 +16,42 @@
       </AllOf>
     </AnyOf>
   </Target>
+  <Rule Effect="Permit" RuleId="to-AGESIC-USER">
+    <Target>
+      <AnyOf>
+        <AllOf>
+          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
+            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
+            </AttributeDesignator>
+          </Match>
+          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">CI</AttributeValue>
+            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:TipoDocumento" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
+            </AttributeDesignator>
+          </Match>
+          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">23456789</AttributeValue>
+            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:NumeroDocumento" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
+            </AttributeDesignator>
+          </Match>
+        </AllOf>
+      </AnyOf>
+    </Target>
+    <ObligationExpressions>
+      <ObligationExpression FulfillOn="Permit" ObligationId="filter">
+        <AttributeAssignmentExpression AttributeId="sexo">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+        </AttributeAssignmentExpression>
+        <AttributeAssignmentExpression AttributeId="tel">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
+        </AttributeAssignmentExpression>
+        <AttributeAssignmentExpression AttributeId="nacionalidad">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nacionalidad</AttributeValue>
+        </AttributeAssignmentExpression>
+      </ObligationExpression>
+    </ObligationExpressions>
+  </Rule>
   <Rule Effect="Permit" RuleId="to-AGESIC">
     <Target>
       <AnyOf>

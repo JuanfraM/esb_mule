@@ -5,12 +5,17 @@
       <ns:return>
         <Response xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17">
           <Result>
-            <Decision>Deny</Decision>
+            <Decision>Permit</Decision>
             <Status>
               <StatusCode Value="urn:oasis:names:tc:xacml:1.0:status:ok"/>
             </Status>
+            <Obligations>
+              <Obligation ObligationId="LOG">
+              </Obligation>
+            </Obligations>
           </Result>
         </Response>
       </ns:return>
     </ns:getDecisionResponse>
-    </soapenv:Body>undefined</soapenv:Envelope>
+  </soapenv:Body>
+</soapenv:Envelope>
