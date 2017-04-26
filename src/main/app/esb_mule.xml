@@ -60,7 +60,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
         <flow-ref name="get_input_params_sf" doc:name="get_input_params_sf"/>
         <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
-        <choice doc:name="Choice">
+        <choice doc:name="Check PDP decision">
             <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
                 <dw:transform-message doc:name="Deny Service">
                     <dw:set-payload><![CDATA[%dw 1.0
@@ -73,20 +73,35 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 }]]></dw:set-payload>
                 </dw:transform-message>
             </when>
-            <otherwise>
+            <when expression="#[message.inboundProperties['http.status'] == 200]">
                 <flow-ref name="not_deny_flow" doc:name="not_deny_flow"/>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+---
+{
+	response: "Problems with PDP"
+}]]></dw:set-payload>
+                </dw:transform-message>
             </otherwise>
         </choice>
         <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
     </flow>
     <sub-flow name="not_deny_flow">
         <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
-        <flow-ref name="prepare_to_rf_sf" doc:name="prepare_to_rf_sf"/>
-        <logger message="Call fetch_read_apply_sf" level="INFO" doc:name="Call fetch_read_apply_sf"/>
-        <choice doc:name="Choice">
-            <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
-                <dw:transform-message doc:name="Deny Service">
-                    <dw:set-payload><![CDATA[%dw 1.0
+        <choice doc:name="Check response status">
+            <when expression="#[message.inboundProperties['http.status'] != 200]">
+                <json:json-to-xml-transformer doc:name="JSON to XML"/>
+            </when>
+            <otherwise>
+                <flow-ref name="prepare_to_rf_sf" doc:name="prepare_to_rf_sf"/>
+                <logger message="Call fetch_read_apply_sf" level="INFO" doc:name="Call fetch_read_apply_sf"/>
+                <choice doc:name="Check PDP decision">
+                    <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
+                        <dw:transform-message doc:name="Deny Service">
+                            <dw:set-payload><![CDATA[%dw 1.0
 %output application/xml
 ---
 {
@@ -94,12 +109,25 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 		info: "Deny Service"
 	}
 }]]></dw:set-payload>
-                </dw:transform-message>
-            </when>
-            <otherwise>
-                <logger level="INFO" doc:name="Prepare output to initial endpoint"/>
-                <json:json-to-xml-transformer doc:name="JSON to XML"/>
+                        </dw:transform-message>
+                    </when>
+                    <otherwise>
+                        <logger message="Prepare output for endpoint" level="INFO" doc:name="Prepare output to initial endpoint"/>
+                        <json:json-to-xml-transformer doc:name="JSON to XML"/>
+                    </otherwise>
+                </choice>
             </otherwise>
         </choice>
+    </sub-flow>
+    <sub-flow name="error_f">
+        <logger message="Error flow!!  #[message.inboundProperties['http.status']]" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Error flow">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	response: payload
+}]]></dw:set-payload>
+        </dw:transform-message>
     </sub-flow>
 </mule>

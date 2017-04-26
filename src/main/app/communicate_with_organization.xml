@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule
+<mule 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
@@ -55,19 +55,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			</http:request-builder>
 		</http:request>
 		<catch-exception-strategy doc:name="Catch Exception Strategy">
-			<logger message="Wrong Service!" level="WARN" doc:name="Wrong Service"/>
-			<dw:transform-message doc:name="Response Wrong Service">
-				<dw:set-payload>
-					<![CDATA[%dw 1.0
-%output application/xml
----
-{
-	response: {
-		info: "Wrong Service"
-	}
-}]]>
-				</dw:set-payload>
-			</dw:transform-message>
+            <flow-ref name="error_f" doc:name="error_f"/>
 		</catch-exception-strategy>
 	</flow>
 </mule>
