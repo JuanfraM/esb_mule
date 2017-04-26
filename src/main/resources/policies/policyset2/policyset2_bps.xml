@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:permit-overrides" PolicySetId="PSet-Data-BPS" Version="1.0">
+  <Target/>
+  <PolicyIdReference>User-Info-BPS</PolicyIdReference>
+  <PolicyIdReference>User-Aporte-BPS-1</PolicyIdReference>
+</PolicySet>
