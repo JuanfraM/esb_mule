@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
     <sub-flow name="apply_obligations_sf">
         <logger message="APPLY OBLIGATIONS #[flowVars.applyObligations]" level="INFO" doc:name="Logger"/>
-        <foreach collection="#[flowVars.applyObligations.Result.Obligations]" doc:name="For Each">
+        <foreach collection="#[flowVars.applyObligations.Result.Obligations]" doc:name="For Each" rootMessageVariableName="obligation">
             <choice doc:name="Choice">
                 <when expression="">
                     <flow-ref name="apply_filter" doc:name="apply_filter"/>
@@ -18,8 +18,14 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
                 <when expression="">
                     <flow-ref name="apply_enrich" doc:name="apply_enrich"/>
                 </when>
+                <when expression="#[payload.Action == 'log']">
+                    <flow-ref name="apply_log" doc:name="apply_log"/>
+                </when>
+                <when expression="#[payload.Action == 'notify']">
+                    <flow-ref name="apply_notify" doc:name="apply_notify"/>
+                </when>
                 <otherwise>
-                    <logger message="GIL" level="INFO" doc:name="Logger"/>
+                    <logger message="Default Obligations, Fuck!!" level="INFO" doc:name="Default Obligation"/>
                 </otherwise>
             </choice>
         </foreach>
@@ -31,10 +37,16 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 	source: flowVars.sourceTarget.Source
 }]]></dw:set-variable>
         </dw:transform-message>
-        <logger message="This is the Result Array #[flowVars.resultArray]" level="INFO" doc:name="Logger"/>
+        <logger message="This is the Result Array after apply obligations #[flowVars.resultArray]" level="INFO" doc:name="Logger"/>
+    </sub-flow>
+    <sub-flow name="apply_log">
+        <logger message="From #[sessionVars.from] To #[sessionVars.destination]" level="INFO" doc:name="Obligation Log"/>
+    </sub-flow>
+    <sub-flow name="apply_notify">
+        <logger message="Apply Notify!!" level="INFO" doc:name="Obligation Notify"/>
     </sub-flow>
     <sub-flow name="apply_enrich">
-        <dw:transform-message doc:name="Transform Message">
+        <dw:transform-message doc:name="Obligation Enrich">
             <dw:set-variable variableName="enrichArray"><![CDATA[%dw 1.0
 %output application/java
 ---
@@ -44,7 +56,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         </dw:transform-message>
     </sub-flow>
     <sub-flow name="apply_filter">
-        <dw:transform-message doc:name="Transform Message">
+        <dw:transform-message doc:name="Obligation Filter">
             <dw:set-variable variableName="filterArray"><![CDATA[%dw 1.0
 %output application/java
 ---
