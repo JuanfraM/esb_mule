@@ -1,7 +1,7 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
     <S:Header>
         <wsa:To>bps</wsa:To>
-        <wsa:From>dgi</wsa:From>
+        <wsa:From>agesic</wsa:From>
         <wsa:Action>bps/bps_users/user-info</wsa:Action>
     </S:Header>
     <soapenv:Body>

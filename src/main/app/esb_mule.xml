@@ -91,12 +91,17 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     </flow>
     <sub-flow name="not_deny_flow">
         <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
+        <json:json-to-xml-transformer doc:name="JSON to XML"/>
+        <set-variable variableName="servicePayload" value="#[message.payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Variable"/>
+        <logger message="Vuelta desde la organizacion" level="INFO" doc:name="Logger"/>
         <choice doc:name="Check response status">
             <when expression="#[message.inboundProperties['http.status'] != 200]">
-                <json:json-to-xml-transformer doc:name="JSON to XML"/>
+                <logger level="INFO" doc:name="Logger"/>
             </when>
             <otherwise>
                 <flow-ref name="prepare_to_rf_sf" doc:name="prepare_to_rf_sf"/>
+                <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
+                <set-payload value="#[flowVars.servicePayload]" doc:name="Set Payload" encoding="UTF-8" mimeType="application/xml"/>
                 <logger message="Call fetch_read_apply_sf" level="INFO" doc:name="Call fetch_read_apply_sf"/>
                 <choice doc:name="Check PDP decision">
                     <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
@@ -113,7 +118,6 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                     </when>
                     <otherwise>
                         <logger message="Prepare output for endpoint" level="INFO" doc:name="Prepare output to initial endpoint"/>
-                        <json:json-to-xml-transformer doc:name="JSON to XML"/>
                     </otherwise>
                 </choice>
             </otherwise>

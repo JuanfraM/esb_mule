@@ -1,119 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"  PolicyId="User-Data-DGI-1" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-permit-overrides" Version="1.0">
-  <Target>
-    <AnyOf>
-      <AllOf>
-        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
-          <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-          </AttributeDesignator>
-        </Match>
-        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">dgi/users/user-data</AttributeValue>
-          <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-          </AttributeDesignator>
-        </Match>
-      </AllOf>
-    </AnyOf>
-  </Target>
-  <Rule Effect="Permit" RuleId="to-AGESIC-USER">
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" PolicyId="User-Data-DGI-1" RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-permit-overrides" Version="1.0">
     <Target>
-      <AnyOf>
-        <AllOf>
-          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
-            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-            </AttributeDesignator>
-          </Match>
-          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">CI</AttributeValue>
-            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:TipoDocumento" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-            </AttributeDesignator>
-          </Match>
-          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">23456789</AttributeValue>
-            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:NumeroDocumento" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-            </AttributeDesignator>
-          </Match>
-        </AllOf>
-      </AnyOf>
+        <AnyOf>
+            <AllOf>
+                <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                </Match>
+                <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">dgi/users/user-data</AttributeValue>
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                </Match>
+            </AllOf>
+        </AnyOf>
     </Target>
+    <Rule Effect="Permit" RuleId="to-AGESIC-USER">
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                    </Match>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">ci</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:tipo_documento" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                    </Match>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">23456789</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:numero_documento" Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <ObligationExpressions>
+            <ObligationExpression FulfillOn="Permit" ObligationId="filter">
+                <AttributeAssignmentExpression AttributeId="sexo">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+                </AttributeAssignmentExpression>
+                <AttributeAssignmentExpression AttributeId="tel">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
+                </AttributeAssignmentExpression>
+                <AttributeAssignmentExpression AttributeId="nacionalidad">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nacionalidad</AttributeValue>
+                </AttributeAssignmentExpression>
+            </ObligationExpression>
+        </ObligationExpressions>
+    </Rule>
+    <Rule Effect="Permit" RuleId="to-AGESIC">
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <ObligationExpressions>
+            <ObligationExpression FulfillOn="Permit" ObligationId="filter">
+                <AttributeAssignmentExpression AttributeId="sexo">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+                </AttributeAssignmentExpression>
+                <AttributeAssignmentExpression AttributeId="tel">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
+                </AttributeAssignmentExpression>
+            </ObligationExpression>
+        </ObligationExpressions>
+    </Rule>
+    <Rule Effect="Permit" RuleId="to-BPS">
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">bps</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <ObligationExpressions>
+            <ObligationExpression FulfillOn="Permit" ObligationId="filter">
+                <AttributeAssignmentExpression AttributeId="sexo">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+                </AttributeAssignmentExpression>
+            </ObligationExpression>
+        </ObligationExpressions>
+    </Rule>
+    <Rule Effect="Deny" RuleId="to-ANTEL">
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">antel</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"></AttributeDesignator>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <ObligationExpressions>
+            <ObligationExpression FulfillOn="Deny" ObligationId="notify"></ObligationExpression>
+        </ObligationExpressions>
+    </Rule>
     <ObligationExpressions>
-      <ObligationExpression FulfillOn="Permit" ObligationId="filter">
-        <AttributeAssignmentExpression AttributeId="sexo">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
-        </AttributeAssignmentExpression>
-        <AttributeAssignmentExpression AttributeId="tel">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
-        </AttributeAssignmentExpression>
-        <AttributeAssignmentExpression AttributeId="nacionalidad">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nacionalidad</AttributeValue>
-        </AttributeAssignmentExpression>
-      </ObligationExpression>
+        <ObligationExpression FulfillOn="Permit" ObligationId="log"></ObligationExpression>
     </ObligationExpressions>
-  </Rule>
-  <Rule Effect="Permit" RuleId="to-AGESIC">
-    <Target>
-      <AnyOf>
-        <AllOf>
-          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
-            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-            </AttributeDesignator>
-          </Match>
-        </AllOf>
-      </AnyOf>
-    </Target>
-    <ObligationExpressions>
-      <ObligationExpression FulfillOn="Permit" ObligationId="filter">
-        <AttributeAssignmentExpression AttributeId="sexo">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
-        </AttributeAssignmentExpression>
-        <AttributeAssignmentExpression AttributeId="tel">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
-        </AttributeAssignmentExpression>
-      </ObligationExpression>
-    </ObligationExpressions>
-  </Rule>
-  <Rule Effect="Permit" RuleId="to-BPS">
-    <Target>
-      <AnyOf>
-        <AllOf>
-          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">bps</AttributeValue>
-            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-            </AttributeDesignator>
-          </Match>
-        </AllOf>
-      </AnyOf>
-    </Target>
-    <ObligationExpressions>
-      <ObligationExpression FulfillOn="Permit" ObligationId="filter">
-        <AttributeAssignmentExpression AttributeId="sexo">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
-        </AttributeAssignmentExpression>
-      </ObligationExpression>
-    </ObligationExpressions>
-  </Rule>
-  <Rule Effect="Deny" RuleId="to-ANTEL">
-    <Target>
-      <AnyOf>
-        <AllOf>
-          <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">antel</AttributeValue>
-            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
-            </AttributeDesignator>
-          </Match>
-        </AllOf>
-      </AnyOf>
-    </Target>
-    <ObligationExpressions>
-      <ObligationExpression FulfillOn="Deny" ObligationId="notify">
-      </ObligationExpression>
-    </ObligationExpressions>
-  </Rule>
-  <ObligationExpressions>
-    <ObligationExpression FulfillOn="Permit" ObligationId="log">
-    </ObligationExpression>
-  </ObligationExpressions>
 </Policy>

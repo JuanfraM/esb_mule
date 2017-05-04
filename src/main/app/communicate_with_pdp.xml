@@ -42,7 +42,7 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
                 IncludeInResult: "false",
                 AttributeId: "urn:oasis:names:tc:xacml:1.0:subject:subject-id"): {
                   AttributeValue @(
-                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.from
+                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.destination
                 }
             },
           Attributes @(
@@ -65,6 +65,86 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
 	                }
               )
         }
+} when payload.soapenv#Envelope != null
+ otherwise
+{
+    Request @(
+        xmlns: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17",
+        ReturnPolicyIdList: "false",
+        CombinedDecision: "false"): {
+  	      Attributes @(
+	        Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:action"): {
+	          Attribute @(
+	            IncludeInResult: "false",
+	            AttributeId: "urn:oasis:names:tc:xacml:1.0:action:action-id"): {
+	              AttributeValue @(
+	                DataType: "http://www.w3.org/2001/XMLSchema#string"): "read"
+	            }
+	         },
+          Attributes @(
+            Category: "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"): {
+              Attribute @(
+                IncludeInResult: "false",
+                AttributeId: "urn:oasis:names:tc:xacml:1.0:subject:subject-id"): {
+                  AttributeValue @(
+                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.destination
+                }
+            },
+          Attributes @(
+            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"):
+
+              (	payload.data mapObject {
+			      Attribute @(
+			        IncludeInResult: "false",
+			        AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:" ++ $$):  {
+			          AttributeValue @(
+			            DataType: "http://www.w3.org/2001/XMLSchema#string"): $
+			        }
+			     }
+		      ) ++
+              (	Attribute @(
+	                IncludeInResult: "false",
+	                AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:resource-id"): {
+	                  AttributeValue @(
+	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.action
+	                }
+              )
+        }
+} when payload.data != null
+
+otherwise
+{
+    Request @(
+        xmlns: "urn:oasis:names:tc:xacml:3.0:core:schema:wd-17",
+        ReturnPolicyIdList: "false",
+        CombinedDecision: "false"): {
+  	      Attributes @(
+	        Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:action"): {
+	          Attribute @(
+	            IncludeInResult: "false",
+	            AttributeId: "urn:oasis:names:tc:xacml:1.0:action:action-id"): {
+	              AttributeValue @(
+	                DataType: "http://www.w3.org/2001/XMLSchema#string"): "read"
+	            }
+	         },
+          Attributes @(
+            Category: "urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"): {
+              Attribute @(
+                IncludeInResult: "false",
+                AttributeId: "urn:oasis:names:tc:xacml:1.0:subject:subject-id"): {
+                  AttributeValue @(
+                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.destination
+                }
+            },
+           Attributes @(
+            Category: "urn:oasis:names:tc:xacml:3.0:attribute-category:resource"):
+              Attribute @(
+	                IncludeInResult: "false",
+	                AttributeId: "urn:oasis:names:tc:xacml:1.0:resource:resource-id"): {
+	                  AttributeValue @(
+	                    DataType: "http://www.w3.org/2001/XMLSchema#string"): sessionVars.action
+	                }
+        }
 }]]></dw:set-variable>
                 </dw:transform-message>
                 <logger message="Payload transformed: #[flowVars.aux]" level="INFO" doc:name="Logger"/>
@@ -79,6 +159,10 @@ http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/e
 	Source: (source mapObject {
 		"$$": $ as :string
 	})
+} when source != null
+otherwise
+{
+	Source: []
 }]]></dw:set-variable>
         </dw:transform-message>
         <logger message="This is the Source Target #[flowVars.sourceTarget]" level="INFO" doc:name="Logger"/>

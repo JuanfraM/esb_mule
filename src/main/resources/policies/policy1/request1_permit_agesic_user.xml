@@ -4,10 +4,10 @@
     <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" IncludeInResult="false">
       <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">dgi/users/user-data</AttributeValue>
     </Attribute>
-    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:TipoDocumento" IncludeInResult="false">
-      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">CI</AttributeValue>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:tipo_documento" IncludeInResult="false">
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">ci</AttributeValue>
     </Attribute>
-    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:NumeroDocumento" IncludeInResult="false">
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:numero_documento" IncludeInResult="false">
       <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">23456789</AttributeValue>
     </Attribute>
   </Attributes>
