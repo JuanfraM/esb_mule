@@ -15,5 +15,6 @@ sessionVars.EntryParams.put("FaultTo", xpath3('/soapenv:Envelope/S:Header/wsa:Fa
 sessionVars.from=xpath3('/soapenv:Envelope/S:Header/wsa:From',payload, 'STRING');
 sessionVars.action=xpath3('/soapenv:Envelope/S:Header/wsa:Action',payload, 'STRING');
 sessionVars.destination=xpath3('/soapenv:Envelope/S:Header/wsa:To',payload, 'STRING') ]]]></expression-component>
+        <set-variable variableName="originalPayload" value="#[payload]" doc:name="Save originalPayload" mimeType="application/xml"/>
     </sub-flow>
 </mule>

@@ -13,5 +13,6 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 flowVars.auxFrom = sessionVars.from;
 sessionVars.from=sessionVars.destination;
 sessionVars.destination=flowVars.auxFrom]]]></expression-component>
+        <set-variable variableName="originalPayload" value="#[payload]" mimeType="application/xml" doc:name="Save originalPayload"/>
     </sub-flow>
 </mule>

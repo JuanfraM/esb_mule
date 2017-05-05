@@ -101,8 +101,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
             <otherwise>
                 <flow-ref name="prepare_to_rf_sf" doc:name="prepare_to_rf_sf"/>
                 <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
-                <set-payload value="#[flowVars.servicePayload]" doc:name="Set Payload" encoding="UTF-8" mimeType="application/xml"/>
-                <logger message="Call fetch_read_apply_sf" level="INFO" doc:name="Call fetch_read_apply_sf"/>
+                <set-payload value="#[flowVars.originalPayload]" doc:name="Set Payload" encoding="UTF-8" mimeType="application/xml"/>
                 <choice doc:name="Check PDP decision">
                     <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
                         <dw:transform-message doc:name="Deny Service">
