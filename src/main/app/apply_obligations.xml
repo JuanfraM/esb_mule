@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+<mule xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+xmlns:spring="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
-http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd"><smtp:gmail-connector name="Gmail" doc:name="Gmail"/>
     <sub-flow name="apply_obligations_sf">
         <logger message="APPLY OBLIGATIONS #[flowVars.applyObligations]" level="INFO" doc:name="Logger"/>
         <foreach collection="#[flowVars.applyObligations.Result.Obligations]" doc:name="For Each" rootMessageVariableName="obligation">
@@ -51,9 +52,9 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 	soapenv#Envelope:
 		soapenv#Body: flowVars.originalPayload.soapenv#Envelope.soapenv#Body mapObject {
 			Persona: $ - payload
-	} 
+	}
 } when flowVars.originalPayload.soapenv#Envelope != null
-otherwise 
+otherwise
 	flowVars.originalPayload mapObject {
 		data: $ - payload
 	}]]></dw:set-variable>
@@ -63,6 +64,15 @@ otherwise
     </sub-flow>
     <sub-flow name="apply_notify">
         <logger message="Apply Notify!!" level="INFO" doc:name="Obligation Notify"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
+                <set-payload value="You don't have  access to #[sessionVars.EntryParams.get(&quot;To&quot;)]" encoding="UTF-8" mimeType="text/plain" doc:name="Set Payload"/>
+                <smtp:outbound-endpoint host="${mail_host}" port="${mail_port}" user="${mail_host_user}" password="${mail_host_password}" connector-ref="Gmail" to="juanlacu@gmail.com"  subject="Deny Service" responseTimeout="10000" doc:name="SMTP"/>
+            </when>
+            <otherwise>
+                <logger level="INFO" doc:name="call other smtp"/>
+            </otherwise>
+        </choice>
     </sub-flow>
     <sub-flow name="apply_enrich">
         <logger message="Apply Enrich!!" level="INFO" doc:name="Logger"/>
