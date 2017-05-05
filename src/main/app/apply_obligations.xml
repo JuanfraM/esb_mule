@@ -40,7 +40,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <logger message="This is the Result Array after apply obligations #[flowVars.resultArray]" level="INFO" doc:name="Logger"/>
     </sub-flow>
     <sub-flow name="apply_log">
-        <logger message="From #[sessionVars.from] To #[sessionVars.destination]" level="INFO" doc:name="Obligation Log"/>
+        <logger message=":::LOG::: From #[sessionVars.from] To #[sessionVars.destination]" level="INFO" doc:name="Obligation Log"/>
     </sub-flow>
     <sub-flow name="apply_notify">
         <logger message="Apply Notify!!" level="INFO" doc:name="Obligation Notify"/>
