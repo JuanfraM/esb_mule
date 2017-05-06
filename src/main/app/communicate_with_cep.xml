@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <http:request-config name="CEP_Request_Configuration" host="#[flowVars.cepService.host]" port="#[flowVars.cepService.port]" basePath="#[flowVars.cepService.base]" doc:name="HTTP Request Configuration"/>
+    <flow name="communicate_with_cep_f">
+        <logger level="INFO" doc:name="Logger" message="Send Event to CEP"/>
+        <dw:transform-message doc:name="CEP Service">
+            <dw:set-variable variableName="cepService"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+    host: p("cep_host"),
+    port: p("cep_port"),
+    base: p("cep_base_path")
+}]]></dw:set-variable>
+        </dw:transform-message>
+        <dw:transform-message doc:name="CEP Request">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    "event": {
+        "metaData": {
+            "timestamp": "9238923328",
+            "sensorName": "services"
+        },
+        "correlationData": {
+            "service": sessionVars.action,
+            "organization":sessionVars.destination
+           }
+    }
+}
+   ]]></dw:set-payload>
+        </dw:transform-message>
+        <http:request config-ref="CEP_Request_Configuration" path="/" method="POST" doc:name="CEP">
+            <http:request-builder>
+                <http:header headerName="Content-Type" value="application/json"/>
+            </http:request-builder>
+        </http:request>
+    </flow>
+</mule>
