@@ -7,7 +7,7 @@
     <soapenv:Body>
         <Persona>
             <TipoDocumento>ci</TipoDocumento>
-            <NumeroDocumento>12345678</NumeroDocumento>
+            <NumeroDocumento>46286492</NumeroDocumento>
         </Persona>
     </soapenv:Body>
 </soapenv:Envelope>

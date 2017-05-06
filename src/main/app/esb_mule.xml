@@ -52,7 +52,8 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <ws:consumer-config name="Web_Service_Consumer" service="EntitlementService" port="EntitlementServiceHttpsSoap11Endpoint" serviceAddress="https://localhost:9443/services/EntitlementService.EntitlementServiceHttpsSoap11Endpoint/" wsdlLocation="https://localhost:9443/services/EntitlementService?wsdl" doc:name="Web Service Consumer" connectorConfig="HTTP_Request_Configuration"/>
 
     <context:property-placeholder location="config.properties" order="1" ignore-unresolvable="true" />
-    <context:property-placeholder location="other.properties" order="2" ignore-unresolvable="true" />
+    <context:property-placeholder location="config.smtp.properties" order="2" ignore-unresolvable="true" />
+    <context:property-placeholder location="other.properties" order="3" ignore-unresolvable="true" />
 
     <flow name="main_f" >
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
