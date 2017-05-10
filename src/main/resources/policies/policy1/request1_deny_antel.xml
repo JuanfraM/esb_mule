@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Request xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" CombinedDecision="false" ReturnPolicyIdList="false">
-  <Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource">
-    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" IncludeInResult="false">
-      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">dgi/users/user-data</AttributeValue>
-    </Attribute>
-  </Attributes>
-  <Attributes Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject">
-    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" IncludeInResult="false">
-      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">antel</AttributeValue>
-    </Attribute>
-  </Attributes>
-  <Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action">
-    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" IncludeInResult="false">
-      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
-    </Attribute>
-  </Attributes>
-</Request>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <ns:getDecisionResponse xmlns:ns="http://org.apache.axis2/xsd">
+      <ns:return>CDATA[<Response xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17">
+        <Result>
+          <Decision>Deny</Decision>
+          <Status>
+            <StatusCode Value="urn:oasis:names:tc:xacml:1.0:status:ok"/>
+          </Status>
+          <Obligations>
+            <Obligation ObligationId="notify">
+              <AttributeAssignment  AttributeId="email" DataType="http://www.w3.org/2001/XMLSchema#string">tesis.eservices@gmail.com</AttributeAssignment>
+              <AttributeAssignment  AttributeId="message" DataType="http://www.w3.org/2001/XMLSchema#string">You do not have access to this Resource</AttributeAssignment>
+              <AttributeAssignment  AttributeId="subject" DataType="http://www.w3.org/2001/XMLSchema#string">Deny Access</AttributeAssignment>
+            </Obligation>
+          </Obligations>
+        </Result>
+      </Response>>
+    </ns:return>
+  </ns:getDecisionResponse>
+</soapenv:Body>
+</soapenv:Envelope>
