@@ -6,8 +6,8 @@
     </S:Header>
     <soapenv:Body>
         <Persona>
-            <TipoDocumento>ci</TipoDocumento>
-            <NumeroDocumento>42576388</NumeroDocumento>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>42576388</numero_documento>
         </Persona>
     </soapenv:Body>
 </soapenv:Envelope>

@@ -30,6 +30,17 @@
         </Condition>
         <ObligationExpressions>
             <ObligationExpression FulfillOn="Permit" ObligationId="log"></ObligationExpression>
+            <ObligationExpression FulfillOn="Permit" ObligationId="notify">
+              <AttributeAssignmentExpression AttributeId="email">
+                <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tesis.eservices@gmail.com</AttributeValue>
+              </AttributeAssignmentExpression>
+              <AttributeAssignmentExpression AttributeId="message">
+                <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">is trying to access the resource dgi/users/user-data/23456789</AttributeValue>
+              </AttributeAssignmentExpression>
+              <AttributeAssignmentExpression AttributeId="subject">
+                <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Trying to access resource</AttributeValue>
+              </AttributeAssignmentExpression>
+            </ObligationExpression>
         </ObligationExpressions>
     </Rule>
 </Policy>

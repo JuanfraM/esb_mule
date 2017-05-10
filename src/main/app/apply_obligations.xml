@@ -31,14 +31,6 @@ http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smt
                 </otherwise>
             </choice>
         </foreach>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-variable variableName="resultArray"><![CDATA[%dw 1.0
-%output application/java
----
-{
-	source: flowVars.sourceTarget.Source
-}]]></dw:set-variable>
-        </dw:transform-message>
         <logger message="This is the Result Array after apply obligations #[flowVars.resultArray]" level="INFO" doc:name="Logger"/>
     </sub-flow>
     <sub-flow name="apply_filter">
@@ -64,15 +56,10 @@ otherwise
     </sub-flow>
     <sub-flow name="apply_notify">
         <logger message="Apply Notify!!" level="INFO" doc:name="Obligation Notify"/>
-        <choice doc:name="Choice">
-            <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
-                <set-payload value="You don't have  access to #[sessionVars.EntryParams.get(&quot;To&quot;)]" encoding="UTF-8" mimeType="text/plain" doc:name="Set Payload"/>
-                <smtp:outbound-endpoint host="${mail_host}" port="${mail_port}" user="${mail_host_user}" password="${mail_host_password}" connector-ref="Gmail" to="juanlacu@gmail.com"  subject="Deny Service" responseTimeout="10000" doc:name="SMTP"/>
-            </when>
-            <otherwise>
-                <logger level="INFO" doc:name="call other smtp"/>
-            </otherwise>
-        </choice>
+        <set-variable variableName="notifyEmail" value="#[payload.Attributes[0]]" mimeType="application/json" doc:name="Set Email"/>
+        <set-variable variableName="notifySubject" value="#[payload.Attributes[2]]" doc:name="Set Subject"/>
+        <set-payload value="#[sessionVars.from] #[payload.Attributes[1]]" encoding="UTF-8" mimeType="text/plain" doc:name="Set Payload"/>
+        <smtp:outbound-endpoint host="${mail_host}" port="${mail_port}" user="${mail_host_user}" password="${mail_host_password}" connector-ref="Gmail" to="#[flowVars.notifyEmail]" subject="#[flowVars.notifySubject]" responseTimeout="10000" doc:name="SMTP"/>
     </sub-flow>
     <sub-flow name="apply_enrich">
         <logger message="Apply Enrich!!" level="INFO" doc:name="Logger"/>

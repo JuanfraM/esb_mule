@@ -72,7 +72,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 ---
 {
 	response: {
-		info: "Deny Service"
+		info: "Deny Service Goes"
 	}
 }]]></dw:set-payload>
                 </dw:transform-message>
@@ -114,7 +114,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 ---
 {
 	response: {
-		info: "Deny Service"
+		info: "Deny Service Returns"
 	}
 }]]></dw:set-payload>
                         </dw:transform-message>
