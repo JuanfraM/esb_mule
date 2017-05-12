@@ -39,14 +39,14 @@
     </Target>
     <ObligationExpressions>
       <ObligationExpression FulfillOn="Permit" ObligationId="filter">
-        <AttributeAssignmentExpression AttributeId="sexo">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+        <AttributeAssignmentExpression AttributeId="email">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">email</AttributeValue>
         </AttributeAssignmentExpression>
         <AttributeAssignmentExpression AttributeId="tel">
           <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
         </AttributeAssignmentExpression>
-        <AttributeAssignmentExpression AttributeId="nacionalidad">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nacionalidad</AttributeValue>
+        <AttributeAssignmentExpression AttributeId="direccion">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">direccion</AttributeValue>
         </AttributeAssignmentExpression>
       </ObligationExpression>
     </ObligationExpressions>
@@ -65,8 +65,8 @@
     </Target>
     <ObligationExpressions>
       <ObligationExpression FulfillOn="Permit" ObligationId="filter">
-        <AttributeAssignmentExpression AttributeId="sexo">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+        <AttributeAssignmentExpression AttributeId="direccion">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">direccion</AttributeValue>
         </AttributeAssignmentExpression>
         <AttributeAssignmentExpression AttributeId="tel">
           <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tel</AttributeValue>
@@ -88,8 +88,11 @@
     </Target>
     <ObligationExpressions>
       <ObligationExpression FulfillOn="Permit" ObligationId="filter">
-        <AttributeAssignmentExpression AttributeId="sexo">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">sexo</AttributeValue>
+        <AttributeAssignmentExpression AttributeId="direccion">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">direccion</AttributeValue>
+        </AttributeAssignmentExpression>
+        <AttributeAssignmentExpression AttributeId="residente">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">residente</AttributeValue>
         </AttributeAssignmentExpression>
       </ObligationExpression>
     </ObligationExpressions>
