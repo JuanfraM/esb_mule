@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
      <mulexml:namespace prefix="S" uri="http://www.w3.org/2003/05/soap-envelope"/>
   	 <mulexml:namespace prefix="wsa" uri="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
    	</mulexml:namespace-manager>
-   
+
    	<configuration doc:name="Configuration">
     	<expression-language autoResolveVariables="true">
      		<global-functions>
@@ -60,9 +60,6 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <cxf:proxy-service configuration-ref="CXF_Configuration" payload="envelope" doc:name="CXF"/>
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
         <flow-ref name="get_input_params_sf" doc:name="get_input_params_sf"/>
-        <set-variable variableName="originalPayload" value="#[message.payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save payload"/>
-        <flow-ref name="communicate_with_cep_f" doc:name="communicate_with_cep_f"/>
-        <set-payload value="#[flowVars.originalPayload]" encoding="UTF-8" mimeType="application/xml" doc:name="Set Payload"/>
         <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
         <choice doc:name="Check PDP decision">
             <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
@@ -99,13 +96,14 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-variable variableName="servicePayload" value="#[message.payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save Payload"/>
         <logger message="Vuelta desde la organizacion" level="INFO" doc:name="Logger"/>
         <choice doc:name="Check response status">
-            <when expression="#[message.inboundProperties['http.status'] != 200]">
+            <when expression="#[message.outboundProperties['http.status'] != 200]">
                 <logger level="INFO" doc:name="Logger"/>
             </when>
             <otherwise>
                 <flow-ref name="prepare_to_rf_sf" doc:name="prepare_to_rf_sf"/>
                 <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
                 <set-payload value="#[flowVars.originalPayload]" doc:name="Set Payload" encoding="UTF-8" mimeType="application/xml"/>
+                <flow-ref name="communicate_with_cep_f" doc:name="communicate_with_cep_f"/>
                 <choice doc:name="Check PDP decision">
                     <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
                         <dw:transform-message doc:name="Deny Service">
@@ -126,15 +124,35 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
             </otherwise>
         </choice>
     </sub-flow>
-    <sub-flow name="error_f">
+		<sub-flow name="error_f">
         <logger message="Error flow!!  #[message.inboundProperties['http.status']]" level="INFO" doc:name="Logger"/>
-        <dw:transform-message doc:name="Error flow">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <choice doc:name="Choice">
+            <when expression="#[exception.causedBy(java.util.concurrent.TimeoutException)]">
+                <set-variable variableName="exception" value="#[exception.message]" doc:name="Variable"/>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	response: {
+		exception: flowVars.exception,
+		type: "Timeout"
+	}
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <set-property propertyName="http.status" value="#[408]" doc:name="Property"/>
+                <flow-ref name="communicate_with_cep_f" doc:name="communicate_with_cep_f"/>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="Error flow">
+                    <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
 	response: payload
 }]]></dw:set-payload>
-        </dw:transform-message>
+                </dw:transform-message>
+            </otherwise>
+        </choice>
     </sub-flow>
 </mule>

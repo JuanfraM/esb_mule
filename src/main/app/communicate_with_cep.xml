@@ -11,6 +11,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     <http:request-config name="CEP_Request_Configuration" host="#[flowVars.cepService.host]" port="#[flowVars.cepService.port]" basePath="#[flowVars.cepService.base]" doc:name="HTTP Request Configuration"/>
     <flow name="communicate_with_cep_f">
         <logger level="INFO" doc:name="Logger" message="Send Event to CEP"/>
+        <set-variable variableName="originalPayload" value="#[message.payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save Payload"/>
         <dw:transform-message doc:name="CEP Service">
             <dw:set-variable variableName="cepService"><![CDATA[%dw 1.0
 %output application/java
@@ -21,8 +22,30 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     base: p("cep_base_path")
 }]]></dw:set-variable>
         </dw:transform-message>
-        <dw:transform-message doc:name="CEP Request">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <choice doc:name="Choice">
+            <when expression="#[message.outboundProperties['http.status'] == 408]">
+                <dw:transform-message doc:name="Timeout">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    "event": {
+        "metaData": {
+            "timestamp": "9238923328",
+            "sensorName": "services"
+        },
+        "correlationData": {
+            "service": "timeout",
+            "organization":"timeout"
+           }
+    }
+}
+   ]]></dw:set-payload>
+                </dw:transform-message>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="CEP Request">
+                    <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
@@ -38,11 +61,14 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     }
 }
    ]]></dw:set-payload>
-        </dw:transform-message>
+                </dw:transform-message>
+            </otherwise>
+        </choice>
         <http:request config-ref="CEP_Request_Configuration" path="/" method="POST" doc:name="CEP">
             <http:request-builder>
                 <http:header headerName="Content-Type" value="application/json"/>
             </http:request-builder>
         </http:request>
+        <set-payload value="#[flowVars.originalPayload]" encoding="UTF-8" mimeType="application/xml" doc:name="Restore Payload"/>
     </flow>
 </mule>
