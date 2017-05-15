@@ -59,6 +59,27 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
         <cxf:proxy-service configuration-ref="CXF_Configuration" payload="envelope" doc:name="CXF"/>
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
+        <flow-ref name="control_input_structure_sf" doc:name="control_input_structure_sf"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.control_input_structure.tipo_documento != null &amp;&amp; flowVars.control_input_structure.numero_documento != null]">
+                <flow-ref name="correct_input_params_f" doc:name="correct_input_params_f"/>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="Wrong Input Params">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+---
+{
+	response: {
+		info: "Wrong input params"
+	}
+}]]></dw:set-payload>
+                </dw:transform-message>
+            </otherwise>
+        </choice>
+        <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
+    </flow>
+    <sub-flow name="correct_input_params_f">
         <flow-ref name="get_input_params_sf" doc:name="get_input_params_sf"/>
         <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
         <choice doc:name="Check PDP decision">
@@ -75,7 +96,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 </dw:transform-message>
             </when>
             <when expression="#[message.inboundProperties['http.status'] == 200]">
-                <flow-ref name="not_deny_flow" doc:name="not_deny_flow"/>
+                <flow-ref name="not_deny_f" doc:name="not_deny_f"/>
             </when>
             <otherwise>
                 <dw:transform-message doc:name="Transform Message">
@@ -88,12 +109,31 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 </dw:transform-message>
             </otherwise>
         </choice>
-        <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
-    </flow>
-    <sub-flow name="not_deny_flow">
+    </sub-flow>
+    <sub-flow name="not_deny_f">
         <flow-ref name="communicate_with_organization_sf" doc:name="communicate_with_organization_sf"/>
         <json:json-to-xml-transformer doc:name="JSON to XML"/>
-        <set-variable variableName="servicePayload" value="#[message.payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save Payload"/>
+        <flow-ref name="control_service_structure_sf" doc:name="control_service_structure_sf"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.control_service_structure.data != null]">
+                <flow-ref name="correct_service_structure_f" doc:name="correct_service_structure_f"/>
+            </when>
+            <otherwise>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+---
+{
+	response: {
+		info: "Wrong structure data service"
+	}
+}]]></dw:set-payload>
+                </dw:transform-message>
+            </otherwise>
+        </choice>
+    </sub-flow>
+    <sub-flow name="correct_service_structure_f">
+        <set-variable variableName="servicePayload" value="#[payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save Payload"/>
         <logger message="Vuelta desde la organizacion" level="INFO" doc:name="Logger"/>
         <choice doc:name="Check response status">
             <when expression="#[message.outboundProperties['http.status'] != 200]">
@@ -102,7 +142,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
             <otherwise>
                 <flow-ref name="prepare_to_rf_sf" doc:name="prepare_to_rf_sf"/>
                 <flow-ref name="fetch_read_apply_sf" doc:name="fetch_read_apply_sf"/>
-                <set-payload value="#[flowVars.originalPayload]" doc:name="Set Payload" encoding="UTF-8" mimeType="application/xml"/>
+                <set-payload value="#[flowVars.originalPayload]" encoding="UTF-8" mimeType="application/xml" doc:name="Set Payload"/>
                 <flow-ref name="communicate_with_cep_f" doc:name="communicate_with_cep_f"/>
                 <choice doc:name="Check PDP decision">
                     <when expression="#[flowVars.applyObligations.Result.Decision == 'Deny']">
