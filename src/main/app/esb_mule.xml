@@ -133,7 +133,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         </choice>
     </sub-flow>
     <sub-flow name="correct_service_structure_f">
-        <set-variable variableName="servicePayload" value="#[payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save Payload"/>
+        <set-variable variableName="servicePayload" value="#[message.payload]" encoding="UTF-8" mimeType="application/xml" doc:name="Save Payload"/>
         <logger message="Vuelta desde la organizacion" level="INFO" doc:name="Logger"/>
         <choice doc:name="Check response status">
             <when expression="#[message.outboundProperties['http.status'] != 200]">
@@ -192,6 +192,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 	response: payload
 }]]></dw:set-payload>
                 </dw:transform-message>
+                <set-property propertyName="http.status" value="#[403]" doc:name="Property"/>
             </otherwise>
         </choice>
     </sub-flow>

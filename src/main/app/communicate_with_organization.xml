@@ -21,9 +21,8 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 	<http:request-config name="request_to_service" host="#[flowVars.destinationService.host]" port="#[flowVars.destinationService.port]" basePath="#[flowVars.destinationService.base]" doc:name="HTTP Request Configuration"/>
 
 	<flow name="communicate_with_organization_sf">
-		<dw:transform-message doc:name="Resolve Service">
-			<dw:set-variable variableName="destinationService">
-				<![CDATA[%dw 1.0
+        <dw:transform-message doc:name="Resolve Service">
+            <dw:set-variable variableName="destinationService"><![CDATA[%dw 1.0
 %output application/java
 %var service = sessionVars.destination
 ---
@@ -33,27 +32,25 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 	base: p("service_base_path"),
 	action: sessionVars.action
 }
-]]>
-			</dw:set-variable>
-		</dw:transform-message>
-		<dw:transform-message doc:name="Generate Request">
-			<dw:set-variable variableName="request">
-				<![CDATA[%dw 1.0
+]]></dw:set-variable>
+        </dw:transform-message>
+        <dw:transform-message doc:name="Generate Request">
+            <dw:set-variable variableName="request"><![CDATA[%dw 1.0
 %output application/java
 ---
 {	
 	(flowVars.sourceTarget.Source mapObject (
 		'$$': $
 	))
-}]]>
-			</dw:set-variable>
-		</dw:transform-message>
+}]]></dw:set-variable>
+        </dw:transform-message>
         <logger message="Request to Service #[flowVars.request]" level="INFO" doc:name="Logger"/>
-		<http:request config-ref="request_to_service" path="#[flowVars.destinationService.action]" method="GET" doc:name="Communicate with Service" parseResponse="false">
-			<http:request-builder>
+        <http:request config-ref="request_to_service" path="#[flowVars.destinationService.action]" method="GET" parseResponse="false" doc:name="Communicate with Service">
+            <http:request-builder>
                 <http:query-params expression="#[flowVars.request]"/>
-			</http:request-builder>
-		</http:request>
+            </http:request-builder>
+        </http:request>
+        <set-property propertyName="http.status" value="#[200]" doc:name="Property"/>
 		<catch-exception-strategy doc:name="Catch Exception Strategy">
             <flow-ref name="error_f" doc:name="error_f"/>
 		</catch-exception-strategy>
