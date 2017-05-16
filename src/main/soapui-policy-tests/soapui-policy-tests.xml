@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="0fc6baed-d8fd-41f2-8368-e68cd7f85070" activeEnvironment="Default" name="soapui-policy-tests" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="3f460938-b0bd-4592-b207-1831a97d44b3" wsaVersion="NONE" name="ProxyServiceSoapBinding" type="wsdl" bindingName="{http://support.cxf.module.mule.org/}ProxyServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8081/?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8081/?wsdl"><con:part><con:url>http://localhost:8081/?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="ProxyService" targetNamespace="http://support.cxf.module.mule.org/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://support.cxf.module.mule.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://support.cxf.module.mule.org/">
+      <xsd:element name="invoke" type="tns:invoke"/>
+      <xsd:complexType name="invoke">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="arg0" type="xsd:anyType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="invokeResponse" type="tns:invokeResponse"/>
+      <xsd:complexType name="invokeResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="return" type="xsd:anyType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="invoke">
+    <wsdl:part element="tns:invoke" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="invokeResponse">
+    <wsdl:part element="tns:invokeResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ProxyServicePortType">
+    <wsdl:operation name="invoke">
+      <wsdl:input message="tns:invoke" name="invoke"></wsdl:input>
+      <wsdl:output message="tns:invokeResponse" name="invokeResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProxyServiceSoapBinding" type="tns:ProxyServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="invoke">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="invoke">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="invokeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProxyService">
+    <wsdl:port binding="tns:ProxyServiceSoapBinding" name="ProxyServicePort">
+      <soap:address location="http://localhost:8081/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8081/</con:endpoint></con:endpoints><con:operation id="c7bec68f-881b-49b6-9211-a1cda2bdaacf" isOneWay="false" action="" name="invoke" bindingOperationName="invoke" type="Request-Response" outputName="invokeResponse" inputName="invoke" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/></con:operation></con:interface><con:testSuite id="278d205f-9985-41dc-aaa1-1c1d2c17ffa6" name="policy-tests"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="c62ed555-97ed-49b3-9b33-adc47432785d" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="policy1" searchProperties="true"><con:settings/><con:testStep type="request" name="to-agesic" id="e4dc7853-1487-405e-a4fc-cd334305e2b6"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-agesic" id="99b24f35-8b92-4630-b61b-c7396830f8c2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>dgi</wsa:To>
+        <wsa:From>agesic</wsa:From>
+        <wsa:Action>dgi/users/user-data</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>46286492</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="31929487-4bee-43be-99ef-979f14465efe" name="XPath Match"><con:configuration><path>/*/node()</path><content><![CDATA[<data>
+   <id>3</id>
+   <numero_documento>46286492</numero_documento>
+   <tipo_documento>ci</tipo_documento>
+   <nombre>Juanito</nombre>
+   <apellido>La Cruz</apellido>
+   <nombre_completo>Juanito La Cruz</nombre_completo>
+   <sexo>M</sexo>
+   <nacionalidad>Uruguaya</nacionalidad>
+   <email>juanlacu@gmail.com</email>
+   <residente>Si</residente>
+</data>
+]]></content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="to-agesic-user" id="61d77e22-6dc6-4a41-b385-bbd00f340c5f"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-agesic-user" id="799bf822-cb0a-4d41-aa50-7fa0f1630fbf"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>dgi</wsa:To>
+        <wsa:From>agesic</wsa:From>
+        <wsa:Action>dgi/users/user-data</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>23456789</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="21a503a7-29d3-4904-8c34-c9499a971e97" name="XPath Match"><con:configuration><path>/*/node()</path><content><![CDATA[<data>
+   <id>4</id>
+   <numero_documento>23456789</numero_documento>
+   <tipo_documento>ci</tipo_documento>
+   <nombre>Faker</nombre>
+   <apellido>User</apellido>
+   <nombre_completo>Faker User</nombre_completo>
+   <sexo>M</sexo>
+   <nacionalidad>Paraguaya</nacionalidad>
+   <residente>No</residente>
+</data>
+]]></content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="to-antel" id="9c3ec6c1-66c6-431b-9923-a4dc94365cef"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-antel" id="9c630b37-2ff0-4db2-b6d9-8b36f7a48507"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>dgi</wsa:To>
+        <wsa:From>antel</wsa:From>
+        <wsa:Action>dgi/users/user-data</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>23456789</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="722ed855-150d-4671-b996-9a1b4111b809" name="XPath Match"><con:configuration><path>/*/node()</path><content>&lt;response>
+   &lt;info>Deny Service Returns&lt;/info>
+&lt;/response>
+</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="to-bps" id="4c54e50a-5356-4ccf-857d-81a7608cd19d"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-bps" id="12ab73ba-582f-4d31-8150-a47c4709f213"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>dgi</wsa:To>
+        <wsa:From>bps</wsa:From>
+        <wsa:Action>dgi/users/user-data</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>23456789</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="9634d570-9729-4248-9c44-15518fae383d" name="XPath Match"><con:configuration><path>/*/node()</path><content><![CDATA[<data>
+   <id>4</id>
+   <numero_documento>23456789</numero_documento>
+   <tipo_documento>ci</tipo_documento>
+   <nombre>Faker</nombre>
+   <apellido>User</apellido>
+   <nombre_completo>Faker User</nombre_completo>
+   <sexo>M</sexo>
+   <nacionalidad>Paraguaya</nacionalidad>
+   <email>juanlacu@gmail.com</email>
+   <tel>098670796</tel>
+</data>
+]]></content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="8a9a214c-66f6-47c1-bc35-9c5b89eeafe2" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="policy2" searchProperties="true"><con:settings/><con:properties/></con:testCase><con:testCase id="8f971dde-e0e9-4da1-b27a-28c0cf74502d" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="policy3" searchProperties="true"><con:settings/><con:testStep type="request" name="to-agesic" id="3c8b43da-f162-44b9-b245-ab89b6eeafe2"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-agesic" id="4822b0c9-94ed-43f8-9f41-4d42bb9b824c"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>bps</wsa:To>
+        <wsa:From>agesic</wsa:From>
+        <wsa:Action>bps/bps_aportes/user-aporte</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>46286492</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="0298c5d0-74b0-4667-9030-f34104b862d1" name="XPath Match"><con:configuration><path>/*/node()</path><content>&lt;response>
+   &lt;info>Deny Service Returns&lt;/info>
+&lt;/response>
+</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="to-dgi" id="65f45a38-b49c-4a32-b6c4-514de717e73b"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-dgi" id="0c9c84c8-28df-41ff-a2d6-60b959ef9ea9"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>bps</wsa:To>
+        <wsa:From>dgi</wsa:From>
+        <wsa:Action>bps/bps_aportes/user-aporte</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>46286492</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="b670516e-c7d7-43ab-a093-36fbed7c24f5" name="XPath Match"><con:configuration><path>/*/node()</path><content><![CDATA[<data>
+   <id>3</id>
+   <nombre_usuario>Juanito</nombre_usuario>
+   <apellido_usuario>La Cruz</apellido_usuario>
+   <sueldo>35000</sueldo>
+   <jubilacion>2800</jubilacion>
+   <fonasa>1400</fonasa>
+</data>
+]]></content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="76ea9a2c-6688-4281-b30a-223f5add7f9e" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="policy4" searchProperties="true"><con:settings/><con:testStep type="request" name="to-dgi" id="2102134f-5684-43ac-8315-557f4117a513"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-dgi" id="0b1ac59f-4652-4443-8ce0-dd2d1d37ee7e"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>bps</wsa:To>
+        <wsa:From>dgi</wsa:From>
+        <wsa:Action>bps/bps_users/user-info</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>46286492</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="6966e30d-533a-4129-aada-9560f87e33c2" name="XPath Match"><con:configuration><path>/*/node()</path><content><![CDATA[<data>
+   <id>3</id>
+   <numero_documento>46286492</numero_documento>
+   <tipo_documento>ci</tipo_documento>
+   <nombre>Juanito</nombre>
+   <apellido>La Cruz</apellido>
+   <sexo>M</sexo>
+   <email>juanlacu@gmail.com</email>
+   <nacionalidad>Uruguaya</nacionalidad>
+   <ano_de_alta>2014</ano_de_alta>
+   <afap>Si</afap>
+</data>
+]]></content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="request" name="to-others" id="27d5e4d5-81e2-461a-ba4d-51111bed0057"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ProxyServiceSoapBinding</con:interface><con:operation>invoke</con:operation><con:request name="to-others" id="a25d59b9-aaa1-4ff9-b2a1-8d71f4dbfdae"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+    <S:Header>
+        <wsa:To>agesic</wsa:To>
+        <wsa:From>bps</wsa:From>
+        <wsa:Action>bps/bps_users/user-info</wsa:Action>
+    </S:Header>
+    <soapenv:Body>
+        <Persona>
+            <tipo_documento>ci</tipo_documento>
+            <numero_documento>46286492</numero_documento>
+        </Persona>
+    </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:assertion type="XPath Match" id="5e8812be-8eaa-4132-95eb-4bd6845b0629" name="XPath Match"><con:configuration><path>/*/node()</path><content><![CDATA[<data>
+   <id>3</id>
+   <numero_documento>46286492</numero_documento>
+   <tipo_documento>ci</tipo_documento>
+   <nombre>Juanito</nombre>
+   <apellido>La Cruz</apellido>
+   <sexo>M</sexo>
+   <email>juanlacu@gmail.com</email>
+   <nacionalidad>Uruguaya</nacionalidad>
+</data>
+]]></content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
