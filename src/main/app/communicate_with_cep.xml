@@ -29,14 +29,9 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 %output application/json
 ---
 {
-    "event": {
-        "metaData": {
-            "timestamp": "9238923328",
-            "sensorName": "services"
-        },
-        "correlationData": {
-            "service": "timeout",
-            "organization":"timeout"
+   "event": {
+        "payloadData": {
+            "service": sessionVars.action
            }
     }
 }
@@ -50,13 +45,11 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 ---
 {
     "event": {
-        "metaData": {
-            "timestamp": "9238923328",
-            "sensorName": "services"
-        },
-        "correlationData": {
+        "payloadData": {
             "service": sessionVars.action,
-            "organization":sessionVars.destination
+            "organization_from":sessionVars.destination,
+            "organization_to": sessionVars.from,
+            "decision": flowVars.applyObligations.Result.Decision
            }
     }
 }
