@@ -11,7 +11,10 @@
             </Status>
             <Obligations>
               <Obligation ObligationId="filter">
-                <AttributeAssignment  AttributeId="nacionalidad" DataType="http://www.w3.org/2001/XMLSchema#string">nacionalidad</AttributeAssignment>
+                <AttributeAssignment  AttributeId="ano_de_alta" DataType="http://www.w3.org/2001/XMLSchema#string">ano_de_alta</AttributeAssignment>
+                <AttributeAssignment  AttributeId="afap" DataType="http://www.w3.org/2001/XMLSchema#string">afap</AttributeAssignment>
+              </Obligation>
+              <Obligation ObligationId="log">
               </Obligation>
             </Obligations>
           </Result>

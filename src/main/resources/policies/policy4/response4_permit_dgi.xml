@@ -5,10 +5,16 @@
       <ns:return>
         <Response xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17">
           <Result>
-            <Decision>NotApplicable</Decision>
+            <Decision>Permit</Decision>
             <Status>
               <StatusCode Value="urn:oasis:names:tc:xacml:1.0:status:ok"/>
             </Status>
+            <Obligations>
+              <Obligation ObligationId="enrich">
+              </Obligation>
+              <Obligation ObligationId="log">
+              </Obligation>
+            </Obligations>
           </Result>
         </Response>
       </ns:return>
