@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 xmlns:spring="http://www.springframework.org/schema/beans"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -9,8 +9,10 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
-http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd"><smtp:gmail-connector name="Gmail" doc:name="Gmail"/>
-    <sub-flow name="apply_obligations_sf">
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd"><smtp:gmail-connector name="Gmail" doc:name="Gmail"/>
+
+    <http:request-config name="request_to_enrich" host="#[flowVars.enrichService.host]" port="#[flowVars.enrichService.port]" basePath="#[flowVars.enrichService.base]" doc:name="HTTP Request Configuration"/>    <sub-flow name="apply_obligations_sf">
         <logger message="APPLY OBLIGATIONS #[flowVars.applyObligations]" level="INFO" doc:name="Logger"/>
         <foreach collection="#[flowVars.applyObligations.Result.Obligations]" doc:name="For Each" rootMessageVariableName="obligation">
             <choice doc:name="Choice">
@@ -62,7 +64,41 @@ otherwise
         <smtp:outbound-endpoint host="${mail_host}" port="${mail_port}" user="${mail_host_user}" password="${mail_host_password}" connector-ref="Gmail" to="#[flowVars.notifyEmail]" subject="#[flowVars.notifySubject]" responseTimeout="10000" doc:name="SMTP"/>
     </sub-flow>
     <sub-flow name="apply_enrich">
-        <logger message="Apply Enrich!!" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-variable variableName="enrichService"><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	host: p("enrich_host"),
+	port: p("enrich_port"),
+	base: p("enrich_base_path"),
+	action: p("enrich_action")
+}
+]]></dw:set-variable>
+        </dw:transform-message>
+        <http:request config-ref="request_to_enrich" path="#[flowVars.enrichService.action]" method="GET" doc:name="Enrich Data">
+            <http:request-builder>
+                <http:query-param paramName="id" value="46286492"/>
+            </http:request-builder>
+        </http:request>
+        <json:json-to-xml-transformer doc:name="JSON to XML"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-variable variableName="originalPayload"><![CDATA[%dw 1.0
+%output application/xml
+%namespace soapenv http://schemas.xmlsoap.org/soap/envelope/
+%var myValue=payload.data.pais
+---
+{
+	soapenv#Envelope:
+		soapenv#Body: flowVars.originalPayload.soapenv#Envelope.soapenv#Body mapObject {
+			Persona: $ ++ Country:myValue
+	}
+} when flowVars.originalPayload.soapenv#Envelope != null
+otherwise
+	flowVars.originalPayload mapObject {
+		data: $ ++ Country:myValue
+	}]]></dw:set-variable>
+        </dw:transform-message>
     </sub-flow>
     <sub-flow name="apply_log">
         <logger message=":::LOG::: From #[sessionVars.from] To #[sessionVars.destination]" level="INFO" doc:name="Logger"/>

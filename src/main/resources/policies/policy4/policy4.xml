@@ -27,6 +27,9 @@
         </AllOf>
       </AnyOf>
     </Target>
+    <ObligationExpressions>
+      <ObligationExpression FulfillOn="Permit" ObligationId="enrich"></ObligationExpression>
+    </ObligationExpressions>
   </Rule>
   <Rule Effect="Permit" RuleId="to-OTHERS">
     <Target>
