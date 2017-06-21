@@ -115,7 +115,7 @@
           <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">tesis.eservices@gmail.com</AttributeValue>
         </AttributeAssignmentExpression>
         <AttributeAssignmentExpression AttributeId="message">
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">resource could not be accessed.</AttributeValue>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">resource user-data could not be accessed by ANTEL.</AttributeValue>
         </AttributeAssignmentExpression>
         <AttributeAssignmentExpression AttributeId="subject">
           <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Deny Access</AttributeValue>
