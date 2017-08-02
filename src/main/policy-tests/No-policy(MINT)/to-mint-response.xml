@@ -1,0 +1,14 @@
+<data>
+   <id>3</id>
+   <numero_documento>46286492</numero_documento>
+   <tipo_documento>ci</tipo_documento>
+   <nombre>Juanito</nombre>
+   <apellido>La Cruz</apellido>
+   <nombre_completo>Juanito La Cruz</nombre_completo>
+   <sexo>M</sexo>
+   <nacionalidad>Uruguaya</nacionalidad>
+   <email>juanlacu@gmail.com</email>
+   <residente>Si</residente>
+   <tel>098670796</tel>
+   <direccion>Los Zorros 762</direccion>
+</data>
