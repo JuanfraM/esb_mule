@@ -15,12 +15,12 @@
       </AllOf>
     </AnyOf>
   </Target>
-  <Rule Effect="Permit" RuleId="to-AGESIC-USER">
+  <Rule Effect="Permit" RuleId="to-DNIC-USER">
     <Target>
       <AnyOf>
         <AllOf>
           <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">dnic</AttributeValue>
             <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
             </AttributeDesignator>
           </Match>
@@ -51,12 +51,12 @@
       </ObligationExpression>
     </ObligationExpressions>
   </Rule>
-  <Rule Effect="Permit" RuleId="to-AGESIC">
+  <Rule Effect="Permit" RuleId="to-DNIC">
     <Target>
       <AnyOf>
         <AllOf>
           <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">agesic</AttributeValue>
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">dnic</AttributeValue>
             <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true">
             </AttributeDesignator>
           </Match>

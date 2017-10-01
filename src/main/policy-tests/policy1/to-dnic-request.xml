@@ -1,13 +1,13 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sup="http://support.cxf.module.mule.org/" xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
     <S:Header>
         <wsa:To>dgi</wsa:To>
-        <wsa:From>agesic</wsa:From>
+        <wsa:From>dnic</wsa:From>
         <wsa:Action>dgi/users/user-data</wsa:Action>
     </S:Header>
     <soapenv:Body>
         <Persona>
             <tipo_documento>ci</tipo_documento>
-            <numero_documento>23456789</numero_documento>
+            <numero_documento>46286492</numero_documento>
         </Persona>
     </soapenv:Body>
 </soapenv:Envelope>
