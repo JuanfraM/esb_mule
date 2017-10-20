@@ -91,12 +91,12 @@ otherwise
 {
 	soapenv#Envelope:
 		soapenv#Body: flowVars.originalPayload.soapenv#Envelope.soapenv#Body mapObject {
-			Persona: $ ++ Country:myValue
+			Persona: $ ++ country:myValue
 	}
 } when flowVars.originalPayload.soapenv#Envelope != null
 otherwise
 	flowVars.originalPayload mapObject {
-		data: $ ++ Country:myValue
+		data: $ ++ country:myValue
 	}]]></dw:set-variable>
         </dw:transform-message>
     </sub-flow>
