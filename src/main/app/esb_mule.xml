@@ -59,24 +59,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
         <cxf:proxy-service configuration-ref="CXF_Configuration" payload="envelope" doc:name="CXF"/>
         <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
-        <flow-ref name="control_input_structure_sf" doc:name="control_input_structure_sf"/>
-        <choice doc:name="Choice">
-            <when expression="#[flowVars.control_input_structure.tipo_documento != null &amp;&amp; flowVars.control_input_structure.numero_documento != null]">
-                <flow-ref name="correct_input_params_f" doc:name="correct_input_params_f"/>
-            </when>
-            <otherwise>
-                <dw:transform-message doc:name="Wrong Input Params">
-                    <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
----
-{
-	response: {
-		info: "Wrong input params"
-	}
-}]]></dw:set-payload>
-                </dw:transform-message>
-            </otherwise>
-        </choice>
+        <flow-ref name="correct_input_params_f" doc:name="correct_input_params_f"/>
         <logger message="FINISH!!!!!" level="INFO" doc:name="FINISH"/>
     </flow>
     <sub-flow name="correct_input_params_f">
