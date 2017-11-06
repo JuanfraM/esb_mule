@@ -61,7 +61,7 @@ otherwise
         <set-variable variableName="notifyEmail" value="#[payload.Attributes[0]]" mimeType="application/json" doc:name="Set Email"/>
         <set-variable variableName="notifySubject" value="#[payload.Attributes[2]]" doc:name="Set Subject"/>
         <set-payload value="#[sessionVars.from] #[payload.Attributes[1]]" encoding="UTF-8" mimeType="text/plain" doc:name="Set Payload"/>
-        <smtp:outbound-endpoint host="${mail_host}" port="${mail_port}" user="${mail_host_user}" password="${mail_host_password}" connector-ref="Gmail" to="#[flowVars.notifyEmail]" subject="#[flowVars.notifySubject]" responseTimeout="10000" doc:name="SMTP"/>
+        <!-- <smtp:outbound-endpoint host="${mail_host}" port="${mail_port}" user="${mail_host_user}" password="${mail_host_password}" connector-ref="Gmail" to="#[flowVars.notifyEmail]" subject="#[flowVars.notifySubject]" responseTimeout="10000" doc:name="SMTP"/> -->
     </sub-flow>
     <sub-flow name="apply_enrich">
         <dw:transform-message doc:name="Transform Message">
